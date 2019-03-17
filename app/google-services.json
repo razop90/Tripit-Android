@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "851997878839",
+    "firebase_url": "https://tripit-65d75.firebaseio.com",
+    "project_id": "tripit-65d75",
+    "storage_bucket": "tripit-65d75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851997878839:android:0b83b4a43b53a3d9",
+        "android_client_info": {
+          "package_name": "com.example.tripit_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851997878839-1i9nsd0n61kjq94e61eqoae0uk5iahct.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tripit_android",
+            "certificate_hash": "5d8c69bb19cf5d66072982750cee064de6ba2b0d"
+          }
+        },
+        {
+          "client_id": "851997878839-ska04c9amftb0n0v7p2hfb7dt6d0ot3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd4popW9inkFKxFG2LJsdmy4MBiseANzw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851997878839-ska04c9amftb0n0v7p2hfb7dt6d0ot3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "851997878839-9siptlot0s3k18hahjgeoal3rabd9fin.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ra.Tripit"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
