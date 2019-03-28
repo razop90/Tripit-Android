@@ -8,4 +8,6 @@
     <string name="tripit">Tripit</string>
     <string name="log_in">Log In</string>
     <string name="register">Register</string>
+    <string name="re_password">Re Password</string>
+    <string name="back_to_login">Back To Login</string>
 </resources>

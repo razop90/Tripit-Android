@@ -2,74 +2,73 @@ package com.example.tripit_android.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-import com.example.tripit_android.R;
-import com.example.tripit_android.models.FirebaseModel;
-import com.example.tripit_android.models.Model;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseUser;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.tripit_android.R;
+import com.example.tripit_android.models.FirebaseModel;
+import com.example.tripit_android.models.Model;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     protected boolean enabled = true;
     TextView emailText;
     TextView passwordText;
+    TextView rePasswordText;
     ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
         emailText = findViewById(R.id.register_email);
         passwordText = findViewById(R.id.register_password);
+        rePasswordText = findViewById(R.id.register_repassword);
         progressBar = findViewById(R.id.register_progressbar);
         progressBar.setVisibility(View.INVISIBLE);
-
-        FirebaseApp.initializeApp(this);
-        FirebaseUser user = Model.instance.currentUser();
-        if (user != null) {
-            gotoMainView();
-        }
     }
 
-    public void OnLoginTapped(View view) {
+    public void OnRegisterTapped(View view) {
         progressBar.setVisibility(View.VISIBLE);
         enabled = false;
 
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
+        String rePassword = rePasswordText.getText().toString();
 
-        if (email.equals("") || password.equals("")) {
+        if (email.equals("") || password.equals("") || !password.equals(rePassword)) {
+            if (!password.equals(rePassword)) {
+                Toast.makeText(RegisterActivity.this, "Please enter same passwords", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(RegisterActivity.this, "Email and Password cannot be empty", Toast.LENGTH_LONG).show();
+            }
             progressBar.setVisibility(View.INVISIBLE);
             enabled = true;
-            Toast.makeText(LoginActivity.this, "Email and Password cannot be empty", Toast.LENGTH_LONG).show();
         } else if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Model.instance.login(email, password, new FirebaseModel.OnLoginCompleteListener() {
+            Model.instance.signUp(email, password, new FirebaseModel.OnSignUpCompleteListener() {
                 @Override
-                public void onLoginComplete(FirebaseUser user) {
-                    if (user != null) {
+                public void onSignUpComplete(Boolean result) {
+                    if (result) {
                         gotoMainView();
                     } else {
                         progressBar.setVisibility(View.INVISIBLE);
                         enabled = true;
-                        Toast.makeText(LoginActivity.this, "Failed while trying to Login. Please try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, "Failed while trying to register. Please try again", Toast.LENGTH_LONG).show();
                     }
                 }
             });
         } else {
             progressBar.setVisibility(View.INVISIBLE);
             enabled = true;
-            Toast.makeText(LoginActivity.this, "Email address isn't valid", Toast.LENGTH_LONG).show();
+            Toast.makeText(RegisterActivity.this, "Email address isn't valid", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void OnRegisterTapped(View view) {
-        Intent intent = new Intent(this, RegisterActivity.class);
+    public void OnLoginTapped(View view) {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
