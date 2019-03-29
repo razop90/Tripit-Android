@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/design_default_color_primary_dark"
+    android:background="@color/login_back"
     tools:context=".Activities.RegisterActivity"
     tools:ignore="LabelFor">
 
@@ -126,7 +126,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@color/button_color"
         android:onClick="OnRegisterTapped"
         android:text="@string/register"
         android:textColor="@color/common_google_signin_btn_text_dark_default"

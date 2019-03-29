@@ -5,8 +5,6 @@ import com.google.firebase.database.Exclude;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.sql.CommonDataSource;
-
 public class Post {
     @Exclude
     public String id;

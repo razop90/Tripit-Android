@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tripit_android.Classes.UserInfo;
-import com.example.tripit_android.PostsListAdapter;
+import com.example.tripit_android.Classes.Adapters.PostsListAdapter;
 import com.example.tripit_android.R;
 import com.example.tripit_android.models.FirebaseModel;
 import com.example.tripit_android.models.Model;

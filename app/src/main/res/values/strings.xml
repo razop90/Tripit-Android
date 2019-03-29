@@ -10,4 +10,11 @@
     <string name="register">Register</string>
     <string name="re_password">Re Password</string>
     <string name="back_to_login">Back To Login</string>
+    <string name="location">location</string>
+    <string name="user_name">User Name</string>
+    <string name="todo">TODO</string>
+    <string name="write_your_e_full_description_about_the_current_location_here_related_to_the_picture_above">Write your\'e full description about the current location here, related to the picture above.</string>
+    <string name="like_button"></string>
+    <string name="_01_01_2001">01/01/2001</string>
+    <string name="comment_button"></string>
 </resources>
