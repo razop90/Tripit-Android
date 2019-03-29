@@ -12,11 +12,13 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tripit_android.Classes.UserInfo;
 import com.example.tripit_android.PostsListAdapter;
 import com.example.tripit_android.R;
 import com.example.tripit_android.models.FirebaseModel;
 import com.example.tripit_android.models.Model;
 import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         mLyoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLyoutManager);
 
-        for (int i=0;i<100;i++){
+        for (int i = 0; i < 100; i++) {
             mData.add("st" + i);
         }
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new PostsListAdapter.OnItemClickListener() {
             @Override
             public void onClick(int index) {
-                Log.d("TAG","item click: " + index);
+                Log.d("TAG", "item click: " + index);
             }
         });
 
@@ -82,6 +84,17 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = Model.instance.currentUser();
         if (user != null) {
             String email = user.getEmail();
+            String uid = user.getUid();
+
+            Model.instance.getUserInfo(uid, new FirebaseModel.OnGetUserInfoCompletedListener() {
+                @Override
+                public void onUserInfoGetComplete(UserInfo userInfo) {
+                    if (userInfo != null) {
+
+                    }
+                }
+            });
+
             Toast.makeText(MainActivity.this, email, Toast.LENGTH_LONG).show();
         }
 
