@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
-        android:text="Eliav"
+        android:text="User Name"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/strow_id_tv"
         app:layout_constraintEnd_toStartOf="@+id/strow_checkbox"

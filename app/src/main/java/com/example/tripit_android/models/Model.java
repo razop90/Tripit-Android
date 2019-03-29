@@ -1,5 +1,8 @@
 package com.example.tripit_android.models;
 
+import android.media.Image;
+
+import com.example.tripit_android.Classes.Post;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Model {
@@ -9,6 +12,30 @@ public class Model {
     //private SqlModel sqlModel = new SqlModel();
 
     private Model() {
+//        firebaseModel.getAllPostsFromDate(0, new FirebaseModel.OnGetPostsCompleteListener() {
+//            @Override
+//            public void onGetPostsComplete(Post data) {
+//                if (data != null) {
+//
+//                }
+//            }
+//        });
+    }
+
+    public void addPost(Post post, Image image, FirebaseModel.OnAddPostCompleteListener callback) {
+        firebaseModel.addPost(post, image, callback);
+    }
+
+    public void updatePost(Post post, Image image, boolean isImageUpdated, FirebaseModel.OnAddPostCompleteListener callback) {
+        firebaseModel.updatePost(post, image, isImageUpdated, callback);
+    }
+
+    public void setPostAsDeleted(String postId) {
+        firebaseModel.setPostAsDeleted(postId);
+    }
+
+    public void getUserInfo(String uid, FirebaseModel.OnGetUserInfoCompletedListener callback) {
+        firebaseModel.getUserInfo(uid, callback);
     }
 
     public void signUp(String email, String password, FirebaseModel.OnSignUpCompleteListener callback) {
