@@ -5,6 +5,7 @@
     <color name="colorAccent">#343434</color>
     <color name="listcColor">#2D2D2D</color>
     <color name="rowColor">#3C3C3C</color>
-    <color name="login_back">#5F5F5F</color>
+    <color name="login_back">#333333</color>
     <color name="button_color">#3477DB</color>
+    <color name="regular_text">#FFFFFF</color>
 </resources>
