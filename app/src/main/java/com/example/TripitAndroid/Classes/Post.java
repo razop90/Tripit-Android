@@ -1,9 +1,12 @@
 package com.example.TripitAndroid.Classes;
 
+import com.example.TripitAndroid.Consts;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Post {
     @Exclude
@@ -22,6 +25,34 @@ public class Post {
 
     public Post() {
 
+    }
+
+    public Post(DataSnapshot snapshot) {
+        String key = snapshot.getKey();
+        Map values = (Map) snapshot.getValue();
+
+        id = key;
+        userID = (String) values.get("userID");
+        location = (String) values.get("location");
+        description = (String) values.get("description");
+        imageUrl = (String) values.get("imageUrl");
+
+        if(values.containsKey("likes"))
+            likes = new HashMap<String, String>((Map)values.get("likes"));
+        else
+            likes = new HashMap<>();
+
+        comments = new ArrayList<>();
+        creationDate = values.get("creationDate");
+
+        long date = 0;
+        try {
+           date = (long)creationDate;
+        } catch (Exception e) { }
+
+        creationDateStringFormat = Consts.General.convertTimestampToStringDate(date, null);
+        lastUpdate =  values.get("lastUpdate");
+        //isDeleted = (int) values.get("isDeleted");
     }
 
     public Post(String _userID,String _id,String _location,String _description,long _creationDate,String _imageUrl,long _lastUpdate){

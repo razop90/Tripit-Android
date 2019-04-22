@@ -15,12 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.TripitAndroid.Classes.Adapters.PostsListAdapter;
+import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.R;
 import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 
@@ -39,7 +41,6 @@ public class PostsFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,15 +49,18 @@ public class PostsFragment extends Fragment {
 
         mRecyclerView = (RecyclerView)view.findViewById(R.id.main_recyclerview);
 
-        for (int i = 0; i < 10; i++) {
-            mData.add("st" + i);
-        }
+        Model.instance.getAllPostsFromDate(1, new FirebaseModel.OnGetPostsCompleteListener() {
+            @Override
+            public void onGetPostsComplete(ArrayList<Post> data) {
+                mAdapter = new PostsListAdapter(data);
 
-        mAdapter = new PostsListAdapter(mData);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+                mRecyclerView.setLayoutManager(layoutManager);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        });
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+
 
 
         //region  tmp initialize

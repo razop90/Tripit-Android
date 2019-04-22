@@ -22,6 +22,10 @@ public class Model {
 //        });
     }
 
+    public void getAllPostsFromDate(long from, FirebaseModel.OnGetPostsCompleteListener callback) {
+        firebaseModel.getAllPostsFromDate(from, callback);
+    }
+
     public void addPost(Post post, Image image, FirebaseModel.OnAddPostCompleteListener callback) {
         firebaseModel.addPost(post, image, callback);
     }

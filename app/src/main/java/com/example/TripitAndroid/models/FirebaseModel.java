@@ -18,11 +18,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class FirebaseModel {
@@ -41,7 +46,7 @@ public class FirebaseModel {
     OnGetUserInfoCompletedListener userInfoGetCompleteListener;
 
     public interface OnGetPostsCompleteListener {
-        void onGetPostsComplete(Post data);
+        void onGetPostsComplete(ArrayList<Post> data);
     }
 
     public interface OnAddPostCompleteListener {
@@ -81,43 +86,88 @@ public class FirebaseModel {
         DatabaseReference stRef = ref.child(Consts.Tables.PostsTableName);
         Query fbQuery = stRef.orderByChild("lastUpdate").startAt(from);
 
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                notifyDataChanged(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+            public void notifyDataChanged(DataSnapshot dataSnapshot) {
+                ArrayList<Post> posts = new ArrayList<Post>();
+
+                //GenericTypeIndicator<List<Post>> t = new GenericTypeIndicator<List<Post>>();
+               // List<Post> messages = dataSnapshot.getValue(t);
+
+                //Post map = dataSnapshot.getValue(Post.class);
+                //String key = (String) dataSnapshot.getKey();
+                //Object name = map.get("userID");
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Post post = new Post(snapshot);
+                    posts.add(post);
+                }
+
+                postsGetCompleteListener.onGetPostsComplete(posts);
+            }
+        };
+
         ChildEventListener dataListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Post p = dataSnapshot.getValue(Post.class);
-                postsGetCompleteListener.onGetPostsComplete(p);
+                notifyDataChanged(dataSnapshot);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Post p = dataSnapshot.getValue(Post.class);
-                postsGetCompleteListener.onGetPostsComplete(p);
+                notifyDataChanged(dataSnapshot);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Post p = dataSnapshot.getValue(Post.class);
-                postsGetCompleteListener.onGetPostsComplete(p);
+                notifyDataChanged(dataSnapshot);
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Post p = dataSnapshot.getValue(Post.class);
-                postsGetCompleteListener.onGetPostsComplete(p);
+                notifyDataChanged(dataSnapshot);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
 
-            public Post getData(DataSnapshot dataSnapshot) {
-                //ArrayList<Post> data = new ArrayList<Post>();
-                Post p = dataSnapshot.getValue(Post.class);
-                return p;
+            public void notifyDataChanged(DataSnapshot dataSnapshot) {
+                ArrayList<Post> posts = new ArrayList<Post>();
+
+                GenericTypeIndicator<List<Post>> t = new GenericTypeIndicator<List<Post>>() {};
+                List<Post> messages = dataSnapshot.getValue(t);
+
+                Post map = dataSnapshot.getValue(Post.class);
+                String key = (String)dataSnapshot.getKey();
+                //Object name = map.get("userID");
+
+               for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                   //String key = (String)snapshot.getKey();
+                   Map values = (Map)snapshot.getValue();
+                   Post post = new Post();
+
+                   //post.id = key;
+                   post.userID = (String)values.get("userID");
+
+                   posts.add(post);
+               }
+
+                postsGetCompleteListener.onGetPostsComplete(posts);
             }
         };
 
-        fbQuery.addChildEventListener(dataListener);
+        //fbQuery.addChildEventListener(dataListener);
+        fbQuery.addValueEventListener(valueEventListener);
     }
 
     public void addPost(Post post, Image image, OnAddPostCompleteListener callback) {

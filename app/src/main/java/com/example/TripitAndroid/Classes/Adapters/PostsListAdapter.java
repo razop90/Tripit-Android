@@ -9,18 +9,24 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.TripitAndroid.Classes.Post;
+import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.R;
+import com.example.TripitAndroid.models.FirebaseModel;
+import com.example.TripitAndroid.models.Model;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostRowViewHolder> {
-    Vector<String> mData;
+    ArrayList<Post> mData;
     OnItemClickListener mListener;
 
-    public PostsListAdapter(Vector<String> data) {
+    public PostsListAdapter(ArrayList<Post> data) {
         mData = data;
     }
 
@@ -42,8 +48,8 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
     @Override
     public void onBindViewHolder(@NonNull PostRowViewHolder postRowViewHolder, int i) {
-        String str = mData.elementAt(i);
-        postRowViewHolder.bind(str);
+        Post post = mData.get(i);
+        postRowViewHolder.bind(post);
     }
 
     @Override
@@ -100,9 +106,27 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             });
         }
 
-        public void bind(String str) {
-            userName.setText(str);
-            //mCb.setChecked(false);
+        public void bind(Post post) {
+            final String userID = post.userID;
+
+            Model.instance.getUserInfo(userID, new FirebaseModel.OnGetUserInfoCompletedListener() {
+                @Override
+                public void onUserInfoGetComplete(UserInfo userInfo) {
+                    if (userInfo != null) userName.setText(userInfo.displayName);
+                    else userName.setText(userID);
+                }
+            });
+
+            //Fields:
+            location.setText(post.location);
+            description.setText(post.description);
+            creationDate.setText(post.creationDateStringFormat);
+
+            //Like button image:
+            @DrawableRes int drawable = R.drawable.like_unpressed;
+            if (post.likes.containsKey(post.userID))
+                drawable = R.drawable.like_pressed;
+            likeButton.setBackgroundResource(drawable);
         }
     }
 }
