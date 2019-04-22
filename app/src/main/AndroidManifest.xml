@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.example.tripit_android">
-
-    <dist:module dist:instant="true" />
+    package="com.example.TripitAndroid">
 
     <application
         android:allowBackup="true"
@@ -12,14 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.RegisterActivity"></activity>
-        <activity android:name=".Activities.MainActivity" />
+        <activity
+            android:name=".Activities.RegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.LoginActivity"
-            android:label="@string/app_name">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

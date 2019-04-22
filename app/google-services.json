@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:851997878839:android:92c47a61a9016322",
+        "android_client_info": {
+          "package_name": "com.example.TripitAndroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851997878839-ska04c9amftb0n0v7p2hfb7dt6d0ot3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd4popW9inkFKxFG2LJsdmy4MBiseANzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851997878839-ska04c9amftb0n0v7p2hfb7dt6d0ot3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "851997878839-9siptlot0s3k18hahjgeoal3rabd9fin.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ra.Tripit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:851997878839:android:0b83b4a43b53a3d9",
         "android_client_info": {
           "package_name": "com.example.tripit_android"
@@ -33,11 +69,7 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "851997878839-ska04c9amftb0n0v7p2hfb7dt6d0ot3o.apps.googleusercontent.com",
@@ -51,9 +83,42 @@
               }
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851997878839:android:473a77782ff50177",
+        "android_client_info": {
+          "package_name": "tripit.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851997878839-ska04c9amftb0n0v7p2hfb7dt6d0ot3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd4popW9inkFKxFG2LJsdmy4MBiseANzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851997878839-ska04c9amftb0n0v7p2hfb7dt6d0ot3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "851997878839-9siptlot0s3k18hahjgeoal3rabd9fin.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ra.Tripit"
+              }
+            }
+          ]
         }
       }
     }

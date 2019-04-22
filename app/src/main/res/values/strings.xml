@@ -1,20 +1,29 @@
 <resources>
-    <string name="app_name">Tripit-Android</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name">TripitAndroid</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="posts">Posts</string>
+    <string name="new_post">New Post</string>
+    <string name="profile">Profile</string>
     <string name="password">Password</string>
-    <string name="email">Email</string>
-    <string name="tripit">Tripit</string>
-    <string name="log_in">Log In</string>
     <string name="register">Register</string>
-    <string name="re_password">Re Password</string>
-    <string name="back_to_login">Back To Login</string>
-    <string name="location">location</string>
+    <string name="log_in">Log In</string>
+    <string name="tripit">Tripit</string>
+    <string name="email">Email</string>
     <string name="user_name">User Name</string>
     <string name="todo">TODO</string>
-    <string name="write_your_e_full_description_about_the_current_location_here_related_to_the_picture_above">Write your\'e full description about the current location here, related to the picture above.</string>
-    <string name="like_button"></string>
+    <string name="write_your_e_full_description_about_the_current_location_here_related_to_the_picture_above">write your\'e full description about the current location here related to the picture above</string>
+    <string name="like_button">like button</string>
+    <string name="comment_button">comment button</string>
     <string name="_01_01_2001">01/01/2001</string>
-    <string name="comment_button"></string>
+    <string name="location">Location</string>
+    <string name="re_password">Re Password</string>
+    <string name="back_to_login">back_to_login</string>
 </resources>
