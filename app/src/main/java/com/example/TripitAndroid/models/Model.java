@@ -5,6 +5,8 @@ import android.media.Image;
 import com.example.TripitAndroid.Classes.Post;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+
 public class Model {
     public static Model instance = new Model();
 
@@ -12,14 +14,15 @@ public class Model {
     //private SqlModel sqlModel = new SqlModel();
 
     private Model() {
-//        firebaseModel.getAllPostsFromDate(0, new FirebaseModel.OnGetPostsCompleteListener() {
-//            @Override
-//            public void onGetPostsComplete(Post data) {
-//                if (data != null) {
+//       firebaseModel.getAllPostsFromDate(0, new FirebaseModel.OnGetPostsCompleteListener() {
+//           @Override
+//           public void onGetPostsComplete(ArrayList<Post> data) {
 //
-//                }
-//            }
-//        });
+//           }
+//       });
+    }
+    public void getAllPostsFromUser(String uid, FirebaseModel.OnGetUserPostsCompleteListener callback) {
+        firebaseModel.getAllPostsFromUser(uid, callback);
     }
 
     public void getAllPostsFromDate(long from, FirebaseModel.OnGetPostsCompleteListener callback) {
