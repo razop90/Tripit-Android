@@ -39,6 +39,7 @@ public class FirebaseModel {
 
     //region Callbacks
     OnGetPostsCompleteListener postsGetCompleteListener;
+    OnGetUserPostsCompleteListener userPostsGetCompleteListener;
     OnAddPostCompleteListener postAddCompleteListener;
     OnLoginCompleteListener loginCompleteListener;
     OnSignUpCompleteListener signUpCompleteListener;
@@ -47,6 +48,10 @@ public class FirebaseModel {
 
     public interface OnGetPostsCompleteListener {
         void onGetPostsComplete(ArrayList<Post> data);
+    }
+
+    public interface OnGetUserPostsCompleteListener {
+        void OnGetUserPostsComplete(ArrayList<Post> data);
     }
 
     public interface OnAddPostCompleteListener {
@@ -78,10 +83,51 @@ public class FirebaseModel {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ref = database.getReference();
         auth = FirebaseAuth.getInstance();
+
+//        getAllPostsFromUser("fiNmpX6PbxRxAAZnrVfEWETFSY53", new OnGetUserPostsCompleteListener() {
+//            @Override
+//            public void OnGetUserPostsComplete(ArrayList<Post> data) {
+//                if (data != null) {
+//
+//                }
+//            }
+//        });
     }
 
-    public void getAllPostsFromDate(long from, OnGetPostsCompleteListener callback) {
+        public void getAllPostsFromUser(String uid, OnGetUserPostsCompleteListener callback){
+            userPostsGetCompleteListener = callback;
+
+            DatabaseReference stRef = ref.child(Consts.Tables.PostsTableName);
+            Query fbQuery = stRef.orderByChild("userID").equalTo(uid);
+
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    notifyDataChanged(dataSnapshot);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+
+                public void notifyDataChanged(DataSnapshot dataSnapshot) {
+                    ArrayList<Post> posts = new ArrayList<Post>();
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Post post = new Post(snapshot);
+                        posts.add(post);
+                    }
+                    userPostsGetCompleteListener.OnGetUserPostsComplete(posts);
+                }
+            };
+
+            fbQuery.addValueEventListener(valueEventListener);
+        }
+
+        public void getAllPostsFromDate(long from, OnGetPostsCompleteListener callback) {
         postsGetCompleteListener = callback;
+
 
         DatabaseReference stRef = ref.child(Consts.Tables.PostsTableName);
         Query fbQuery = stRef.orderByChild("lastUpdate").startAt(from);
@@ -203,6 +249,8 @@ public class FirebaseModel {
             }
         }
     }
+
+
 
     private void updatePostParameters(Post post, boolean saveImage, String newImageUrl) {
         ref.child(Consts.Tables.PostsTableName).child(post.id).child("location").setValue(post.location);
