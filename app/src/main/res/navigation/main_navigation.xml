@@ -16,7 +16,7 @@
         android:label="New Post"
         tools:layout="@layout/fragment_add_new_post" />
     <fragment
-        android:id="@+id/profileFragment"
+        android:id="@+id/Profile_recyclerview"
         android:name="com.example.TripitAndroid.Fragments.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
