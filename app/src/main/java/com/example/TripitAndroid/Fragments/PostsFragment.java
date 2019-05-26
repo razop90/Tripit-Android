@@ -1,13 +1,16 @@
 package com.example.TripitAndroid.Fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import com.example.TripitAndroid.models.Model;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -49,23 +53,16 @@ public class PostsFragment extends Fragment {
 
         mRecyclerView = (RecyclerView)view.findViewById(R.id.main_recyclerview);
 
-        Model.instance.getAllPostsFromDate(1, new FirebaseModel.OnGetPostsCompleteListener() {
+        Model.instance.getAllPosts(new Model.OnPostUpdatedListener() {
             @Override
-            public void onGetPostsComplete(ArrayList<Post> data) {
-                mAdapter = new PostsListAdapter(data);
+            public void onPostUpdated(ArrayList<Post> posts) {
+                mAdapter = new PostsListAdapter(posts);
 
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
                 mRecyclerView.setLayoutManager(layoutManager);
                 mRecyclerView.setAdapter(mAdapter);
             }
         });
-
-
-
-
-        //region  tmp initialize
-
-        //endregion
 
         //mTextMessage = view.findViewById(R.id.message);
 
@@ -94,5 +91,4 @@ public class PostsFragment extends Fragment {
         // Inflate the layout for this fragment
         return view;
     }
-
 }

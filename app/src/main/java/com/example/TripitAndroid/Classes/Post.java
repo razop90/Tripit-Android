@@ -17,7 +17,11 @@ public class Post {
     @Exclude
     public String creationDateStringFormat;
     public Object creationDate;
+    @Exclude
+    public long creationDateLongFormat;
     public Object lastUpdate;
+    @Exclude
+    public long lastUpdateLongFormat;
     public String imageUrl;
     public  HashMap<String, String> likes; //contains user id's
     public int isDeleted; //0 for false, 1 for true
@@ -45,13 +49,18 @@ public class Post {
         comments = new ArrayList<>();
         creationDate = values.get("creationDate");
 
-        long date = 0;
+        creationDateLongFormat = 0;
         try {
-           date = (long)creationDate;
+            creationDateLongFormat = (long)creationDate;
         } catch (Exception e) { }
 
-        creationDateStringFormat = Consts.General.convertTimestampToStringDate(date, null);
+        creationDateStringFormat = Consts.General.convertTimestampToStringDate(creationDateLongFormat, null);
         lastUpdate =  values.get("lastUpdate");
+
+        lastUpdateLongFormat = 0;
+        try {
+            lastUpdateLongFormat = (long)lastUpdate;
+        } catch (Exception e) { }
         //isDeleted = (int) values.get("isDeleted");
     }
 

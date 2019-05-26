@@ -49,11 +49,10 @@ public class ProfileFragment extends Fragment {
 
         String uid = Model.instance.currentUser().getUid();
 
-        Model.instance.getAllPostsFromUser(uid, new FirebaseModel.OnGetUserPostsCompleteListener() {
+        Model.instance.getAllPostsFromUser(uid, new Model.OnPostUpdatedListener() {
             @Override
-            public void OnGetUserPostsComplete(ArrayList<Post> data) {
-                mAdapter = new ProfileListAdapter(data);
-
+            public void onPostUpdated(ArrayList<Post> posts) {
+                mAdapter = new ProfileListAdapter(posts);
 
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
                 mRecyclerView.setLayoutManager(layoutManager);
