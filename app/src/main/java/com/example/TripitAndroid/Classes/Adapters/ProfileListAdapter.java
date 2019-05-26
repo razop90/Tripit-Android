@@ -19,14 +19,9 @@ import com.example.TripitAndroid.models.Model;
 
 import java.util.ArrayList;
 
-
-
-
 public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.PostRowViewHolder> {
     ArrayList<Post> mData;
     ProfileListAdapter.OnItemClickListener mListener;
-
-
 
     public ProfileListAdapter(ArrayList<Post> data) {
         mData = data;
@@ -47,8 +42,6 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         PostRowViewHolder viewHolder = new PostRowViewHolder(view, mListener);
         return viewHolder;
     }
-
-
 
     @Override
     public void onBindViewHolder(@NonNull PostRowViewHolder postRowViewHolder, int i) {
@@ -113,9 +106,9 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         public void bind(Post post) {
             final String userID = post.userID;
 
-            Model.instance.getUserInfo(userID, new FirebaseModel.OnGetUserInfoCompletedListener() {
+            Model.instance.getUserInfo(userID, new Model.OnUserInfoUpdated() {
                 @Override
-                public void onUserInfoGetComplete(UserInfo userInfo) {
+                public void onUserInfoUpdated(UserInfo userInfo) {
                     if (userInfo != null) {
                         userName.setText(userInfo.displayName);
                     }
