@@ -71,14 +71,6 @@ public class PostsFragment extends Fragment {
             String email = user.getEmail();
             String uid = user.getUid();
 
-            Model.instance.getUserInfo(uid, new FirebaseModel.OnGetUserInfoCompletedListener() {
-                @Override
-                public void onUserInfoGetComplete(UserInfo userInfo) {
-                    if (userInfo != null) {
-
-                    }
-                }
-            });
 
             Toast.makeText(getActivity(), email, Toast.LENGTH_LONG).show();
         }

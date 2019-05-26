@@ -3,6 +3,7 @@ package com.example.TripitAndroid.models;
 import android.media.Image;
 
 import com.example.TripitAndroid.Classes.Post;
+import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -13,18 +14,23 @@ public class Model {
     public static Model instance = new Model();
 
     private String userId = null;
+    private String searchedUserInfo = null;
     private FirebaseModel firebaseModel = new FirebaseModel();
     private SqlModel sqlModel = new SqlModel();
 
     //region Callbacks
     public OnPostUpdatedListener onPostUpdatedListener;
     public OnPostUpdatedListener onUserPostUpdatedListener;
+    public OnUserInfoUpdated onUserInfoUpdated;
 
     private interface OnGetPostsCompleteListener {
         void onGetPostsComplete(boolean isUpdated, boolean curUserUpdated);
     }
     public interface OnPostUpdatedListener {
         void onPostUpdated(ArrayList<Post> posts);
+    }
+    public interface OnUserInfoUpdated {
+        void onUserInfoUpdated(UserInfo userInfo);
     }
     //endregion
 
@@ -132,8 +138,36 @@ public class Model {
         firebaseModel.setPostAsDeleted(postId);
     }
 
-    public void getUserInfo(String uid, FirebaseModel.OnGetUserInfoCompletedListener callback) {
-        firebaseModel.getUserInfo(uid, callback);
+    public void getUserInfo(String uid, OnUserInfoUpdated callback) {
+        onUserInfoUpdated = callback;
+        searchedUserInfo = uid;
+
+        firebaseModel.getUserInfo(uid, new FirebaseModel.OnGetUserInfoCompletedListener() {
+            @Override
+            public void onUserInfoGetComplete(UserInfo userInfo) {
+                if(userInfo != null) {
+                    long lastUpdated = sqlModel.getLastUpdate(Consts.SQL.UserInfoTableName);
+                    lastUpdated += 1;
+
+                    sqlModel.addUserInfo(userInfo);
+
+                    if (userInfo.getLastUpdate() > lastUpdated){
+                        lastUpdated = userInfo.getLastUpdate();
+                        sqlModel.updateLastUpdate(Consts.SQL.UserInfoTableName, lastUpdated);
+                        getUserInfoFromLocalAndNotify(searchedUserInfo, onUserInfoUpdated);
+                    }
+                }
+            }
+        });
+
+        getUserInfoFromLocalAndNotify(uid, callback);
+    }
+
+    private void getUserInfoFromLocalAndNotify(String uid, OnUserInfoUpdated callback) {
+        UserInfo info = sqlModel.getUserInfo(uid);
+        if(info != null) {
+            callback.onUserInfoUpdated(info);
+        }
     }
 
     public void signUp(String email, String password, FirebaseModel.OnSignUpCompleteListener callback) {

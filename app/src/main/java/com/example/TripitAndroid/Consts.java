@@ -16,8 +16,9 @@ public class Consts {
 
     public static class SQL {
         public static String PostsTableName = "POSTS";
+        public static String UserInfoTableName = "USER_INFO";
+        public static String LikesTableName = "LIKES";
         public static String LastUpdateTableName = "LAST_UPDATE";
-
     }
 
     public static class General {

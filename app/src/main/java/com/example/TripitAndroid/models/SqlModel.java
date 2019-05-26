@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.TripitApplication;
+import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
 
 import java.util.ArrayList;
@@ -121,10 +122,58 @@ public class SqlModel {
     }
     //endregion
 
+    //region User Info
+    public UserInfo getUserInfo(String userId) {
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(Consts.SQL.UserInfoTableName, null, "UID=?", new String[] { userId }, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            int idIndex = cursor.getColumnIndex("UID");
+            int nameIndex = cursor.getColumnIndex("DISPLAY_NAME");
+            int emailIndex = cursor.getColumnIndex("EMAIL");
+            int imageUrlIndex = cursor.getColumnIndex("IMAGEURL");
+            int timestampIndex = cursor.getColumnIndex("TIMESTAMP");
+
+            do {
+                String id = cursor.getString(idIndex);
+                String name = cursor.getString(nameIndex);
+                String email = cursor.getString(emailIndex);
+                String imageUrl = cursor.getString(imageUrlIndex);
+                long timestamp = cursor.getLong(timestampIndex);
+
+                return new UserInfo(id, name, email, imageUrl, timestamp);
+            } while (cursor.moveToNext());
+        }
+
+        return null;
+    }
+
+    public void addUserInfo(UserInfo user) {
+        ContentValues values = new ContentValues();
+        values.put("DISPLAY_NAME", user.displayName);
+        values.put("EMAIL", user.email);
+        values.put("IMAGEURL", user.profileImageUrl);
+        values.put("TIMESTAMP", user.getLastUpdate());
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        int rows = db.update(Consts.SQL.UserInfoTableName, values, "UID=?", new String[]{ user.uid });
+        if (rows == 0) {
+            values.put("UID", user.uid);
+            db.insert(Consts.SQL.UserInfoTableName, "UID", values);
+        }
+    }
+
+    //endregion
+
+    //region Likes
+    //endregion
+
     class MyHelper extends SQLiteOpenHelper {
 
         public MyHelper(Context context) {
-            super(context, "database.db", null, 5);
+            super(context, "database.db", null, 6);
         }
 
         @Override
@@ -134,12 +183,19 @@ public class SqlModel {
                     "LAST_UPDATE DOUBLE, IS_DELETED INTEGER)");
 
             db.execSQL("CREATE TABLE IF NOT EXISTS " + Consts.SQL.LastUpdateTableName + " (TABLE_NAME TEXT PRIMARY KEY, DATE DOUBLE)");
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + Consts.SQL.UserInfoTableName + " (UID TEXT PRIMARY KEY, DISPLAY_NAME TEXT, EMAIL TEXT, IMAGEURL TEXT, TIMESTAMP DOUBLE)");
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + Consts.SQL.LikesTableName + " (UID TEXT, POST_ID TEXT)");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE " + Consts.SQL.PostsTableName);
-            db.execSQL("DROP TABLE " + Consts.SQL.LastUpdateTableName);
+            db.execSQL("DROP TABLE IF EXISTS " + Consts.SQL.PostsTableName);
+            db.execSQL("DROP TABLE IF EXISTS " + Consts.SQL.UserInfoTableName);
+            db.execSQL("DROP TABLE IF EXISTS " + Consts.SQL.LikesTableName);
+            db.execSQL("DROP TABLE IF EXISTS " + Consts.SQL.LastUpdateTableName);
+
             onCreate(db);
         }
     }
