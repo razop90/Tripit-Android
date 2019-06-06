@@ -21,10 +21,6 @@ import com.example.TripitAndroid.models.Model;
 import java.util.ArrayList;
 import java.util.Vector;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ProfileFragment extends Fragment {
 
     private TextView mTextMessage;
@@ -37,7 +33,6 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,15 +40,12 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.Profile_recyclerview);
 
-
-
         String uid = Model.instance.currentUser().getUid();
 
-        Model.instance.getAllPostsFromUser(uid, new FirebaseModel.OnGetUserPostsCompleteListener() {
+        Model.instance.getAllPostsFromUser(uid, new Model.OnPostUpdatedListener() {
             @Override
-            public void OnGetUserPostsComplete(ArrayList<Post> data) {
-                mAdapter = new ProfileListAdapter(data);
-
+            public void onPostUpdated(ArrayList<Post> posts) {
+                mAdapter = new ProfileListAdapter(posts);
 
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
                 mRecyclerView.setLayoutManager(layoutManager);
@@ -63,5 +55,4 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
-
 }

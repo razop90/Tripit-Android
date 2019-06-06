@@ -109,9 +109,9 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         public void bind(Post post) {
             final String userID = post.userID;
 
-            Model.instance.getUserInfo(userID, new FirebaseModel.OnGetUserInfoCompletedListener() {
+            Model.instance.getUserInfo(userID, new Model.OnUserInfoUpdated() {
                 @Override
-                public void onUserInfoGetComplete(UserInfo userInfo) {
+                public void onUserInfoUpdated(UserInfo userInfo) {
                     if (userInfo != null) userName.setText(userInfo.displayName);
                     else userName.setText(userID);
                 }
