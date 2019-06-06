@@ -94,6 +94,39 @@ public class FirebaseModel {
 //        });
     }
 
+    //updating or creating a post
+    public void updatePost(Post post //,UIImage image,
+                            ,boolean isImageUpdated) {
+
+        if image != nil {
+            if(isImageUpdated) { //uploading an image
+                saveImage(folderName: Consts.Posts.ImagesFolderName, image: image!) { (url:String?) in
+                    if(post.id == "") {
+                        if url != nil {
+                            post.imageUrl = url!
+                        }
+
+                        let postRef = self.ref!.child(Consts.Posts.PostsTableName).childByAutoId()
+                        post.id = postRef.key!
+
+                                postRef.setValue(post.toJson())
+                    } else {
+                        self.updatePostParameters(post, true, url)
+                    }
+
+                    completionBlock(url)
+                }
+            } else if(post.id != "") { //no need of uploading an image and it's not a new post
+                updatePostParameters(post, false)
+
+                completionBlock(post.imageUrl)
+            } else { //nothing to add or update
+                completionBlock("")
+            }
+        }
+    }
+
+
         public void getAllPostsFromUser(String uid, OnGetUserPostsCompleteListener callback){
             userPostsGetCompleteListener = callback;
 
