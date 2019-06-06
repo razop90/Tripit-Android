@@ -6,6 +6,7 @@ import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
 import com.google.firebase.auth.FirebaseUser;
+import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,4 +186,18 @@ public class Model {
     public FirebaseUser currentUser() {
         return firebaseModel.currentUser();
     }
+
+    //image
+    public interface SaveImageListener{
+        void onComplete(String url);
+    }
+
+    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
+        firebaseModel.saveImage(imageBitmap, listener);
+    }
 }
+
+
+
+
+
