@@ -29,6 +29,14 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 
+    //added
+    implementation 'com.google.firebase:firebase-firestore:19.0.2'
+    implementation 'com.google.android.gms:play-services:11.0.4'
+    //implementation 'com.google.firebase:firebase-core:16.0.9'
+
+
+    //
+
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
@@ -42,3 +50,5 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+

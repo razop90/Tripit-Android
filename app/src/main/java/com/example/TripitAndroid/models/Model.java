@@ -6,6 +6,8 @@ import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
 import com.google.firebase.auth.FirebaseUser;
+import android.graphics.Bitmap;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,4 +187,36 @@ public class Model {
     public FirebaseUser currentUser() {
         return firebaseModel.currentUser();
     }
+
+    //added
+
+    //GetAllStudentsListener
+//    public interface GetAllPostsListener{
+//        void onComplete(List<Post> data);
+//    }
+    //getAllStudents
+//    public void getAllPosts(GetAllPostsListener listener) {
+//        firebaseModel.getAllStudents(listener);
+//    }
+
+//    public interface AddStudentListener{
+//        void onComplete(boolean success);
+//    }
+//    public void addStudent(Student student, AddStudentListener listener) {
+//        //TODO: fix async impl
+//        firebaseModel.addStudent(student, listener);
+//    }
+
+    public interface OnAddPostCompleteListener {
+        void onComplete(boolean success);
+    }
+
+    public interface SaveImageListener{
+        void onComplete(String url);
+    }
+    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
+        firebaseModel.saveImage(imageBitmap, listener);
+    }
+
+
 }

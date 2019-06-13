@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addPost"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.AddPostFragment">
 
     <ImageView
-        android:id="@+id/ns_image_img"
+        android:id="@+id/post_image"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginStart="55dp"
@@ -33,7 +34,7 @@
         android:text="Description:"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ns_image_img" />
+        app:layout_constraintTop_toBottomOf="@+id/post_image" />
 
 
     <EditText
@@ -61,7 +62,7 @@
         android:text="Upload Post" />
 
     <ProgressBar
-        android:id="@+id/ns_progree_pb"
+        android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyle"
         android:layout_width="100dp"
         android:layout_height="200dp"

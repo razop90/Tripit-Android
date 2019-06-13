@@ -5,11 +5,26 @@ import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +37,14 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 
@@ -93,6 +116,7 @@ public class FirebaseModel {
 //            }
 //        });
     }
+
 
         public void getAllPostsFromUser(String uid, OnGetUserPostsCompleteListener callback){
             userPostsGetCompleteListener = callback;
@@ -406,5 +430,43 @@ public class FirebaseModel {
 //        });
 
         return null;
+    }
+
+    public void saveImage(Bitmap imageBitmap, final Model.SaveImageListener listener) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+
+        Date d = new Date();
+        // Create a reference to "mountains.jpg"
+        final StorageReference imageStorageRef = storageRef.child("image_" + d.getTime() + ".jpg");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = imageStorageRef.putBytes(data);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return imageStorageRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    listener.onComplete(downloadUri.toString());
+                } else {
+                    listener.onComplete(null);
+                }
+            }
+        });
     }
 }

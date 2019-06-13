@@ -1,6 +1,6 @@
 package com.example.TripitAndroid.Classes.Adapters;
 
-//import android.media.Image;
+import android.media.Image;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.R;
-import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
 
 import java.util.ArrayList;
