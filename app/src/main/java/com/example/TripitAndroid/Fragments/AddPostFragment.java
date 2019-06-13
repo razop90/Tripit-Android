@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -95,7 +96,9 @@ public class AddPostFragment extends Fragment {
         }
     }
 
+    private AddPostFragment fragment;
     private void save() {
+        fragment = this;
         // activate progress bar
         progressBar.setVisibility(View.VISIBLE);
 
@@ -111,20 +114,15 @@ public class AddPostFragment extends Fragment {
                 Post post = new Post();
 
                 // save Post
-
-                Model.instance.addPost(post, null ,new Model.OnAddPostCompleteListener()  {
+                Model.instance.addPost(post, null, new FirebaseModel.OnAddPostCompleteListener() {
                     @Override
-                    public void onComplete(boolean success) {
-                        //stop progress bar
+                    public  void onAddPostsComplete(String url) {
                         progressBar.setVisibility(View.INVISIBLE);
 
-                        // close activity
-                        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-                       // getActivity().finish();
-                        //finish();
+                        fragment.getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
                     }
                 });
-
             }
         });
 

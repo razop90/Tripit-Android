@@ -24,6 +24,16 @@ public class Model {
     public OnPostUpdatedListener onPostUpdatedListener;
     public OnPostUpdatedListener onUserPostUpdatedListener;
     public OnUserInfoUpdated onUserInfoUpdated;
+    public OnAddPostCompleteListener onAddPostCompleteListener;
+    public SaveImageListener saveImageListener;
+
+    public interface OnAddPostCompleteListener {
+        void onComplete(boolean success);
+    }
+
+    public interface SaveImageListener{
+        void onComplete(String url);
+    }
 
     private interface OnGetPostsCompleteListener {
         void onGetPostsComplete(boolean isUpdated, boolean curUserUpdated);
@@ -188,32 +198,7 @@ public class Model {
         return firebaseModel.currentUser();
     }
 
-    //added
 
-    //GetAllStudentsListener
-//    public interface GetAllPostsListener{
-//        void onComplete(List<Post> data);
-//    }
-    //getAllStudents
-//    public void getAllPosts(GetAllPostsListener listener) {
-//        firebaseModel.getAllStudents(listener);
-//    }
-
-//    public interface AddStudentListener{
-//        void onComplete(boolean success);
-//    }
-//    public void addStudent(Student student, AddStudentListener listener) {
-//        //TODO: fix async impl
-//        firebaseModel.addStudent(student, listener);
-//    }
-
-    public interface OnAddPostCompleteListener {
-        void onComplete(boolean success);
-    }
-
-    public interface SaveImageListener{
-        void onComplete(String url);
-    }
     public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
         firebaseModel.saveImage(imageBitmap, listener);
     }
