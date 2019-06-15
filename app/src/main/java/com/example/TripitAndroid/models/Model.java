@@ -6,6 +6,8 @@ import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
 import com.google.firebase.auth.FirebaseUser;
+import android.graphics.Bitmap;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,16 @@ public class Model {
     public OnPostUpdatedListener onPostUpdatedListener;
     public OnPostUpdatedListener onUserPostUpdatedListener;
     public OnUserInfoUpdated onUserInfoUpdated;
+    public OnAddPostCompleteListener onAddPostCompleteListener;
+    public SaveImageListener saveImageListener;
+
+    public interface OnAddPostCompleteListener {
+        void onComplete(boolean success);
+    }
+
+    public interface SaveImageListener{
+        void onComplete(String url);
+    }
 
     private interface OnGetPostsCompleteListener {
         void onGetPostsComplete(boolean isUpdated, boolean curUserUpdated);
@@ -126,12 +138,12 @@ public class Model {
         callback.onGetPostsComplete(isUpdated, currUserUpdated);
     }
 
-    public void addPost(Post post, Image image, FirebaseModel.OnAddPostCompleteListener callback) {
-        firebaseModel.addPost(post, image, callback);
+    public void addPost(Post post, FirebaseModel.OnAddPostCompleteListener callback) {
+        firebaseModel.addPost(post, callback);
     }
 
-    public void updatePost(Post post, Image image, boolean isImageUpdated, FirebaseModel.OnAddPostCompleteListener callback) {
-        firebaseModel.updatePost(post, image, isImageUpdated, callback);
+    public void updatePost(Post post, boolean isImageUpdated, FirebaseModel.OnAddPostCompleteListener callback) {
+        firebaseModel.updatePost(post, isImageUpdated, callback);
     }
 
     public void setPostAsDeleted(String postId) {
@@ -185,4 +197,11 @@ public class Model {
     public FirebaseUser currentUser() {
         return firebaseModel.currentUser();
     }
+
+
+    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
+        firebaseModel.saveImage(imageBitmap, listener);
+    }
+
+
 }
