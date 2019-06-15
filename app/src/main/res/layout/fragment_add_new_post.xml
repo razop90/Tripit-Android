@@ -1,15 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addPost"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.AddPostFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/addNewPostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Add Post" />
+    <ImageView
+        android:id="@+id/post_image"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/empty" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/take_pic_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-200dp"
+        android:layout_marginTop="350dp"
+        android:text="Take Pic" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-240dp"
+        android:layout_marginTop="400dp"
+        android:text="Description:"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_image" />
+
+
+    <EditText
+        android:id="@+id/description_on_post_txt"
+        android:layout_width="390dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-125dp"
+        android:layout_marginTop="450dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/textView" />
+
+
+    <Button
+        android:id="@+id/upload_post_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-250dp"
+        android:layout_marginTop="550dp"
+        android:layout_marginBottom="10dp"
+        android:text="Upload Post" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="100dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="-120dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="8dp" />
+</LinearLayout>
