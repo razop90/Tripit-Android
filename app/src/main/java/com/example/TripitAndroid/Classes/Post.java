@@ -3,6 +3,7 @@ package com.example.TripitAndroid.Classes;
 import com.example.TripitAndroid.Consts;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +76,19 @@ public class Post {
         creationDate = _creationDate;
         //creationDateStringFormat = Consts.General.convertTimestampToStringDate(self.creationDate)
         lastUpdate = _lastUpdate;
+        isDeleted = 0;
+    }
+
+    public Post(String _userID,String _location,String _description,String _imageUrl){
+        id = null;
+        userID = _userID;
+        location = _location;
+        description = _description;
+        imageUrl = _imageUrl;
+        likes = new HashMap<String, String>();
+        comments = new ArrayList<Comment>();
+        creationDate = ServerValue.TIMESTAMP;
+        lastUpdate = ServerValue.TIMESTAMP;
         isDeleted = 0;
     }
 
