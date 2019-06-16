@@ -1,15 +1,34 @@
+
 package com.example.TripitAndroid.models;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.util.Log;
 import android.widget.ImageView;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +41,14 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+
+//import com.google.firebase.firestore.DocumentSnapshot;
+//import com.google.firebase.firestore.EventListener;
+//import com.google.firebase.firestore.FirebaseFirestore;
+//import com.google.firebase.firestore.FirebaseFirestoreException;
+//import com.google.firebase.firestore.FirebaseFirestoreSettings;
+//import com.google.firebase.firestore.QueryDocumentSnapshot;
+//import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 
@@ -55,7 +82,7 @@ public class FirebaseModel {
     }
 
     public interface OnAddPostCompleteListener {
-        void onAddPostsComplete(String imageUrl);
+        void onAddPostsComplete();
     }
 
     public interface OnLoginCompleteListener {
@@ -94,38 +121,39 @@ public class FirebaseModel {
 //        });
     }
 
-        public void getAllPostsFromUser(String uid, OnGetUserPostsCompleteListener callback){
-            userPostsGetCompleteListener = callback;
 
-            DatabaseReference stRef = ref.child(Consts.Tables.PostsTableName);
-            Query fbQuery = stRef.orderByChild("userID").equalTo(uid);
+    public void getAllPostsFromUser(String uid, OnGetUserPostsCompleteListener callback){
+        userPostsGetCompleteListener = callback;
 
-            ValueEventListener valueEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    notifyDataChanged(dataSnapshot);
+        DatabaseReference stRef = ref.child(Consts.Tables.PostsTableName);
+        Query fbQuery = stRef.orderByChild("userID").equalTo(uid);
+
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                notifyDataChanged(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+            public void notifyDataChanged(DataSnapshot dataSnapshot) {
+                ArrayList<Post> posts = new ArrayList<Post>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Post post = new Post(snapshot);
+                    posts.add(post);
                 }
+                userPostsGetCompleteListener.OnGetUserPostsComplete(posts);
+            }
+        };
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+        fbQuery.addValueEventListener(valueEventListener);
+    }
 
-                }
-
-                public void notifyDataChanged(DataSnapshot dataSnapshot) {
-                    ArrayList<Post> posts = new ArrayList<Post>();
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Post post = new Post(snapshot);
-                        posts.add(post);
-                    }
-                    userPostsGetCompleteListener.OnGetUserPostsComplete(posts);
-                }
-            };
-
-            fbQuery.addValueEventListener(valueEventListener);
-        }
-
-        public void getAllPostsFromDate(long from, OnGetPostsCompleteListener callback) {
+    public void getAllPostsFromDate(long from, OnGetPostsCompleteListener callback) {
         postsGetCompleteListener = callback;
 
 
@@ -147,7 +175,7 @@ public class FirebaseModel {
                 ArrayList<Post> posts = new ArrayList<Post>();
 
                 //GenericTypeIndicator<List<Post>> t = new GenericTypeIndicator<List<Post>>();
-               // List<Post> messages = dataSnapshot.getValue(t);
+                // List<Post> messages = dataSnapshot.getValue(t);
 
                 //Post map = dataSnapshot.getValue(Post.class);
                 //String key = (String) dataSnapshot.getKey();
@@ -197,16 +225,16 @@ public class FirebaseModel {
                 String key = (String)dataSnapshot.getKey();
                 //Object name = map.get("userID");
 
-               for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                   //String key = (String)snapshot.getKey();
-                   Map values = (Map)snapshot.getValue();
-                   Post post = new Post();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    //String key = (String)snapshot.getKey();
+                    Map values = (Map)snapshot.getValue();
+                    Post post = new Post();
 
-                   //post.id = key;
-                   post.userID = (String)values.get("userID");
+                    //post.id = key;
+                    post.userID = (String)values.get("userID");
 
-                   posts.add(post);
-               }
+                    posts.add(post);
+                }
 
                 postsGetCompleteListener.onGetPostsComplete(posts);
             }
@@ -216,37 +244,30 @@ public class FirebaseModel {
         fbQuery.addValueEventListener(valueEventListener);
     }
 
-    public void addPost(Post post, Image image, OnAddPostCompleteListener callback) {
+    public void addPost(Post post, OnAddPostCompleteListener callback) {
         postAddCompleteListener = callback;
-        final String imageUrl = "";
 
-        if (image != null) {
-            //ToDo - add image uploading and then post uploading.
-        } else {
-            ref.child(Consts.Tables.PostsTableName).push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        postAddCompleteListener.onAddPostsComplete(imageUrl);
-                    }
+        ref.child(Consts.Tables.PostsTableName).push().setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    postAddCompleteListener.onAddPostsComplete();
                 }
-            });
-        }
+            }
+        });
     }
 
-    public void updatePost(Post post, Image image, boolean isImageUpdated, OnAddPostCompleteListener callback) {
+    public void updatePost(Post post, boolean isImageUpdated, OnAddPostCompleteListener callback) {
         postAddCompleteListener = callback;
 
-        if (image == null) {
-            if (isImageUpdated) { //uploading an image
-                //ToDo - add image uploading and then post uploading.
-            } else if (post.id != "") { //no need of uploading an image and it's not a new post
-                updatePostParameters(post, false, null);
+        if (isImageUpdated) { //uploading an image
+            //ToDo - add image uploading and then post uploading.
+        } else if (post.id != "") { //no need of uploading an image and it's not a new post
+            updatePostParameters(post, false, null);
 
-                postAddCompleteListener.onAddPostsComplete(post.imageUrl);
-            } else { //nothing to add or update
-                postAddCompleteListener.onAddPostsComplete("");
-            }
+            postAddCompleteListener.onAddPostsComplete();
+        } else { //nothing to add or update
+            postAddCompleteListener.onAddPostsComplete();
         }
     }
 
@@ -406,5 +427,91 @@ public class FirebaseModel {
 //        });
 
         return null;
+    }
+
+    public void saveImage(Bitmap imageBitmap, final Model.SaveImageListener listener) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        Date d = new Date();
+        // Create a reference to "mountains.jpg"
+        final StorageReference imageStorageRef = storageRef.child("image_" + d.getTime() + ".jpg");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = imageStorageRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception exception) {
+                listener.fail();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                listener.onComplete(null);
+            }
+        });
+    }
+
+// old func of saveImage
+
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        // Create a storage reference from our app
+//        StorageReference storageRef = storage.getReference();
+//
+//        Date d = new Date();
+//        // Create a reference to "mountains.jpg"
+//        final StorageReference imageStorageRef = storageRef.child("image_" + d.getTime() + ".jpg");
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//        byte[] data = baos.toByteArray();
+//
+//        UploadTask uploadTask = imageStorageRef.putBytes(data);
+//
+//        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//            @Override
+//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                if (!task.isSuccessful()) {
+//                    throw task.getException();
+//                }
+//
+//                // Continue with the task to get the download URL
+//                return imageStorageRef.getDownloadUrl();
+//            }
+//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Uri> task) {
+//                if (task.isSuccessful()) {
+//                    Uri downloadUri = task.getResult();
+//                    listener.onComplete(downloadUri.toString());
+//                } else {
+//                    listener.onComplete(null);
+//                }
+//            }
+//        });
+//    }
+
+    public void getImage(String url, final Model.GetImageListener listener){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference httpsReference = storage.getReferenceFromUrl(url);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        httpsReference.getBytes(3*ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                listener.onComplete(image.toString());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception exception) {
+                Log.d("TAG",exception.getMessage());
+                listener.fail();
+
+            }
+        });
     }
 }
