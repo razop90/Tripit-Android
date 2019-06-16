@@ -103,14 +103,11 @@ public class AddPostFragment extends Fragment {
         fragment = this;
         // activate progress bar
         progressBar.setVisibility(View.VISIBLE);
-
         // save image
+        //Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
         Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
-
             @Override
             public void onComplete(String url) {
-                // create post
-
                 FirebaseUser user =  Model.instance.currentUser();
 
                 Post p = new Post(user.getUid() ,locationPost.getText().toString(), descriptionPost.getText().toString(), url);
@@ -123,10 +120,11 @@ public class AddPostFragment extends Fragment {
                     }
                 });
             }
+
+            @Override
+            public void fail() {
+            }
         });
-
-
-
     }
 
 }
