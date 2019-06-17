@@ -1,5 +1,7 @@
 package com.example.TripitAndroid.Classes.Adapters;
 
+import android.content.Intent;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
+import com.example.TripitAndroid.Fragments.AddPostFragment;
 import com.example.TripitAndroid.R;
 import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -38,7 +42,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
     @NonNull
     @Override
     public PostRowViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_row, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_edit_row, viewGroup, false);
         PostRowViewHolder viewHolder = new PostRowViewHolder(view, mListener);
         return viewHolder;
     }
@@ -55,14 +59,19 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
     }
 
     static class PostRowViewHolder extends RecyclerView.ViewHolder {
+
         Button likeButton;
         Button commentButton;
+        Button editButton;
+
+
         ImageView profileImage;
         ImageView mainImage;
         TextView userName;
         TextView location;
         TextView description;
         TextView creationDate;
+
 
         public PostRowViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -75,6 +84,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             location = itemView.findViewById(R.id.row_location);
             description = itemView.findViewById(R.id.row_description);
             creationDate = itemView.findViewById(R.id.row_creation_date);
+            editButton = itemView.findViewById(R.id.row_edit_button);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,7 +111,19 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
                 }
             });
+
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editPost();
+                }
+            });
         }
+
+        private void editPost() {
+
+        }
+
 
         public void bind(Post post) {
             final String userID = post.userID;
@@ -120,6 +142,9 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             location.setText(post.location);
             description.setText(post.description);
             creationDate.setText(post.creationDateStringFormat);
+            //mainImage.setImageBitmap(Model.instance.getImage(Model.instance.getImage();););
+
+            //            postImageView.setImageBitmap(imageBitmap);
 
             //Like button image:
             @DrawableRes int drawable = R.drawable.like_unpressed;

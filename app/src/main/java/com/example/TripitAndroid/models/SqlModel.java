@@ -59,6 +59,7 @@ public class SqlModel {
                     int isDeleted = cursor.getInt(isDeletedIndex);
 
                     Post post = new Post(curUserId, id, location, description, creationDate, imageUrl, lastUpdate);
+                    //curUserId, location, description, imageUrl
                     post.isDeleted = isDeleted;
 
                     data.add(post);

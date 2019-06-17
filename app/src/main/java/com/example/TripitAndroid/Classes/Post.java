@@ -24,7 +24,7 @@ public class Post {
     @Exclude
     public long lastUpdateLongFormat;
     public String imageUrl;
-    public  HashMap<String, String> likes; //contains user id's
+    public  HashMap<String, String> likes;//contains user id's
     public int isDeleted; //0 for false, 1 for true
     public ArrayList<Comment> comments;
 
@@ -100,5 +100,9 @@ public class Post {
     public void removeLike(String userId) {
         if(likes.containsKey(userId))
             likes.remove(userId);
+    }
+
+    public String getImage() {
+        return imageUrl;
     }
 }

@@ -104,7 +104,6 @@ public class AddPostFragment extends Fragment {
         // activate progress bar
         progressBar.setVisibility(View.VISIBLE);
         // save image
-        //Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
         Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
             @Override
             public void onComplete(String url) {
