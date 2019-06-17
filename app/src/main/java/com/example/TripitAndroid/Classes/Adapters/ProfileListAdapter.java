@@ -1,6 +1,8 @@
 package com.example.TripitAndroid.Classes.Adapters;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,8 @@ import com.example.TripitAndroid.R;
 import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
@@ -138,13 +142,50 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
                 }
             });
 
+            //Photo
+            //photo
+            mainImage.setTag(post.id);
+            mainImage.setImageResource(R.drawable.empty);
+
+            if(post.getImage() != null) {
+                Picasso.get().setIndicatorsEnabled(true);
+                final String postID = post.id;
+
+                Target target = new Target(){
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        if (mainImage.getTag() == postID) {
+                            mainImage.setImageBitmap(bitmap);
+                            mainImage.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        mainImage.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        mainImage.setVisibility(View.VISIBLE);
+                    }
+                };
+                String a = post.getImage();
+                Picasso.get().load(post.getImage())
+                        .placeholder(R.drawable.empty)
+                        .into(mainImage);
+
+            }else{
+                mainImage.setVisibility(View.INVISIBLE);
+            }
+
+
             //Fields:
             location.setText(post.location);
             description.setText(post.description);
             creationDate.setText(post.creationDateStringFormat);
             //mainImage.setImageBitmap(Model.instance.getImage(Model.instance.getImage();););
 
-            //            postImageView.setImageBitmap(imageBitmap);
 
             //Like button image:
             @DrawableRes int drawable = R.drawable.like_unpressed;

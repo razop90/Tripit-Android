@@ -105,4 +105,6 @@ public class Post {
     public String getImage() {
         return imageUrl;
     }
+
+
 }
