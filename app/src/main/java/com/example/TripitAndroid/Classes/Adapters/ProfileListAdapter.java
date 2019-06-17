@@ -1,5 +1,6 @@
 package com.example.TripitAndroid.Classes.Adapters;
 
+import com.example.TripitAndroid.Fragments.AddPostFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -10,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.TripitAndroid.Classes.Post;
@@ -125,6 +129,18 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         }
 
         private void editPost() {
+/*
+Fragment newFragment = new ExampleFragment();
+FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack if needed
+transaction.replace(R.id.fragment_container, newFragment);
+transaction.addToBackStack(null);
+
+// Commit the transaction
+transaction.commit();
+ */
 
         }
 

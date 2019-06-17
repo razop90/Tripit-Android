@@ -59,6 +59,7 @@ public class AddPostFragment extends Fragment {
         locationPost = (EditText) view.findViewById(R.id.location_on_post_txt);
         takePicBtn = (Button) view.findViewById(R.id.take_pic_btn);
         uploadPostBtn = (Button) view.findViewById(R.id.upload_post_btn);
+        //progressBar.setVisibility(View.INVISIBLE);
 
 
         takePicBtn.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +84,7 @@ public class AddPostFragment extends Fragment {
     final static int RESAULT_SUCCESS = 0;
     Bitmap imageBitmap;
 
+
     private void takePic() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -103,7 +105,7 @@ public class AddPostFragment extends Fragment {
         fragment = this;
         // activate progress bar
         progressBar.setVisibility(View.VISIBLE);
-        // save image
+
         Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
             @Override
             public void onComplete(String url) {
@@ -114,7 +116,8 @@ public class AddPostFragment extends Fragment {
                 Model.instance.addPost(p, new FirebaseModel.OnAddPostCompleteListener() {
                     @Override
                     public  void onAddPostsComplete() {
-                        progressBar.setVisibility(View.INVISIBLE);
+
+                        //progressBar.setVisibility(View.INVISIBLE);
                         fragment.getActivity().onBackPressed();
                     }
                 });
