@@ -62,10 +62,14 @@ public class Post {
         try {
             lastUpdateLongFormat = (long)lastUpdate;
         } catch (Exception e) { }
-        //isDeleted = (int) values.get("isDeleted");
+
+        try {
+            long del = (long)values.get("isDeleted");
+            isDeleted = (int)del;
+        } catch (Exception e) { }
     }
 
-    public Post(String _userID,String _id,String _location,String _description,long _creationDate,String _imageUrl,long _lastUpdate){
+    public Post(String _userID,String _id,String _location,String _description,long _creationDate,String _imageUrl,long _lastUpdate, int _isDeleted){
         id = _id;
         userID = _userID;
         location = _location;
@@ -76,7 +80,7 @@ public class Post {
         creationDate = _creationDate;
         //creationDateStringFormat = Consts.General.convertTimestampToStringDate(self.creationDate)
         lastUpdate = _lastUpdate;
-        isDeleted = 0;
+        isDeleted = _isDeleted;
     }
 
     public Post(String _userID,String _location,String _description,String _imageUrl){

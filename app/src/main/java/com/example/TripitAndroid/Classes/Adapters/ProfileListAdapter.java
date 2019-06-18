@@ -34,12 +34,17 @@ import java.util.ArrayList;
 public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.PostRowViewHolder> {
     ArrayList<Post> mData;
     ProfileListAdapter.OnItemClickListener mListener;
+    ProfileListAdapter.OnDeleteClickListener mDeleteListener;
 
     public ProfileListAdapter(ArrayList<Post> data) {
         mData = data;
     }
 
     public interface OnItemClickListener {
+        void onClick(int index);
+    }
+
+    public interface OnDeleteClickListener {
         void onClick(int index);
     }
 
@@ -51,7 +56,19 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
     @Override
     public PostRowViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_edit_row, viewGroup, false);
-        PostRowViewHolder viewHolder = new PostRowViewHolder(view, mListener);
+
+        OnDeleteClickListener deleteListener = new OnDeleteClickListener() {
+            @Override
+            public void onClick(int index) {
+                Model.instance.setPostAsDeleted(mData.get(index).id);
+            }
+        };
+
+        if(mDeleteListener == null) {
+            mDeleteListener = deleteListener;
+        }
+
+        PostRowViewHolder viewHolder = new PostRowViewHolder(mData.get(i).id,view, mListener, mDeleteListener);
         return viewHolder;
     }
 
@@ -67,23 +84,21 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
     }
 
     static class PostRowViewHolder extends RecyclerView.ViewHolder {
-
         Button likeButton;
         Button commentButton;
         Button editButton;
-
-
         ImageView profileImage;
         ImageView mainImage;
         TextView userName;
         TextView location;
         TextView description;
         TextView creationDate;
+        String mid;
 
 
-        public PostRowViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
+        public PostRowViewHolder(String id,@NonNull View itemView, final OnItemClickListener listener, final OnDeleteClickListener deleteListener) {
             super(itemView);
-
+            mid = id;
             likeButton = itemView.findViewById(R.id.row_like_button);
             commentButton = itemView.findViewById(R.id.row_comment_button);
             profileImage = itemView.findViewById(R.id.row_profile_image);
@@ -123,12 +138,17 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editPost();
+                    int index = getAdapterPosition();
+                    if (deleteListener != null) {
+                        if (index != RecyclerView.NO_POSITION) {
+                            deleteListener.onClick(index);
+                        }
+                    }
                 }
             });
         }
 
-        private void editPost() {
+        private void deletePost(String id) {
 /*
 Fragment newFragment = new ExampleFragment();
 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -141,9 +161,7 @@ transaction.addToBackStack(null);
 // Commit the transaction
 transaction.commit();
  */
-
         }
-
 
         public void bind(Post post) {
             final String userID = post.userID;
@@ -159,7 +177,6 @@ transaction.commit();
             });
 
             //Photo
-            //photo
             mainImage.setTag(post.id);
             mainImage.setImageResource(R.drawable.empty);
 
@@ -200,7 +217,6 @@ transaction.commit();
             location.setText(post.location);
             description.setText(post.description);
             creationDate.setText(post.creationDateStringFormat);
-            //mainImage.setImageBitmap(Model.instance.getImage(Model.instance.getImage();););
 
 
             //Like button image:
