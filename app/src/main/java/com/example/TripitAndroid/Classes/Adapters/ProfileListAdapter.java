@@ -85,6 +85,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
     static class PostRowViewHolder extends RecyclerView.ViewHolder {
         Button likeButton;
+        Button trashButton;
         Button commentButton;
         Button editButton;
         ImageView profileImage;
@@ -108,6 +109,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             description = itemView.findViewById(R.id.row_description);
             creationDate = itemView.findViewById(R.id.row_creation_date);
             editButton = itemView.findViewById(R.id.row_edit_button);
+            trashButton = itemView.findViewById(R.id.row_trash_button);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,7 +137,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
                 }
             });
 
-            editButton.setOnClickListener(new View.OnClickListener() {
+            trashButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int index = getAdapterPosition();
@@ -143,6 +145,21 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
                         if (index != RecyclerView.NO_POSITION) {
                             deleteListener.onClick(index);
                         }
+                    }
+                }
+            });
+
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int index = getAdapterPosition();
+
+
+
+                    if (deleteListener != null) {
+//                        if (index != RecyclerView.NO_POSITION) {
+//                            deleteListener.onClick(index);
+//                        }
                     }
                 }
             });
