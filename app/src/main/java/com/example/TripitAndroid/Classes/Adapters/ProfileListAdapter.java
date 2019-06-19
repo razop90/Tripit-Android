@@ -152,32 +152,9 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int index = getAdapterPosition();
 
-
-
-                    if (deleteListener != null) {
-//                        if (index != RecyclerView.NO_POSITION) {
-//                            deleteListener.onClick(index);
-//                        }
-                    }
                 }
             });
-        }
-
-        private void deletePost(String id) {
-/*
-Fragment newFragment = new ExampleFragment();
-FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack if needed
-transaction.replace(R.id.fragment_container, newFragment);
-transaction.addToBackStack(null);
-
-// Commit the transaction
-transaction.commit();
- */
         }
 
         public void bind(Post post) {

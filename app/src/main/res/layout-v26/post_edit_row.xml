@@ -105,11 +105,11 @@
         android:id="@+id/row_comment_button"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="158dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/comment"
         android:text=""
-
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/row_description"
         app:layout_constraintStart_toEndOf="@+id/row_like_button"
         app:layout_constraintTop_toBottomOf="@+id/row_main_image"
@@ -124,7 +124,7 @@
         android:background="@drawable/edit"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/row_description"
-        app:layout_constraintStart_toEndOf="@+id/row_comment_button"
+        app:layout_constraintStart_toEndOf="@+id/row_like_button"
         app:layout_constraintTop_toBottomOf="@+id/row_main_image"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -132,12 +132,12 @@
         android:id="@+id/row_trash_button"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/trash"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/row_description"
-        app:layout_constraintStart_toEndOf="@+id/row_comment_button"
+        app:layout_constraintStart_toEndOf="@+id/row_edit_button"
         app:layout_constraintTop_toBottomOf="@+id/row_main_image"
         app:layout_constraintVertical_bias="0.0" />
 
