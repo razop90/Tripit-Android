@@ -2,12 +2,19 @@ package com.example.TripitAndroid.Classes.Adapters;
 
 //import android.media.Image;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import android.graphics.drawable.Drawable;
+
 
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
@@ -116,6 +123,43 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                     else userName.setText(userID);
                 }
             });
+
+            //photo
+            mainImage.setTag(post.id);
+            mainImage.setImageResource(R.drawable.empty);
+
+            if(post.getImage() != null) {
+                Picasso.get().setIndicatorsEnabled(true);
+                final String postID = post.id;
+
+                Target target = new Target(){
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        if (mainImage.getTag() == postID) {
+                            mainImage.setImageBitmap(bitmap);
+                            mainImage.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        mainImage.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        mainImage.setVisibility(View.VISIBLE);
+                    }
+                };
+                String a = post.getImage();
+                Picasso.get().load(post.getImage())
+                        .placeholder(R.drawable.empty)
+                        .into(mainImage);
+
+            }else{
+                mainImage.setVisibility(View.INVISIBLE);
+            }
+
 
             //Fields:
             location.setText(post.location);

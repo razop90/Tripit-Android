@@ -276,7 +276,11 @@ public class FirebaseModel {
     private void updatePostParameters(Post post, boolean saveImage, String newImageUrl) {
         ref.child(Consts.Tables.PostsTableName).child(post.id).child("location").setValue(post.location);
         ref.child(Consts.Tables.PostsTableName).child(post.id).child("description").setValue(post.description);
+        ref.child(Consts.Tables.PostsTableName).child(post.id).child("imageUrl").setValue(post.imageUrl);
         if (saveImage && post.imageUrl != null && newImageUrl != null) {
+            deleteImage(post.imageUrl);
+            ref.child(Consts.Tables.PostsTableName).child(post.id).child("imageUrl").setValue(newImageUrl);
+        }if (saveImage && post.imageUrl != null && newImageUrl != null) {
             deleteImage(post.imageUrl);
             ref.child(Consts.Tables.PostsTableName).child(post.id).child("imageUrl").setValue(newImageUrl);
         }
@@ -451,7 +455,15 @@ public class FirebaseModel {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                listener.onComplete(null);
+                Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                while (!urlTask.isSuccessful());
+                Uri downloadUrl = urlTask.getResult();
+
+                final String sdownload_url = String.valueOf(downloadUrl);
+                listener.onComplete(sdownload_url);
+
+//                @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+//                listener.onComplete(downloadUrl.toString());
             }
         });
     }

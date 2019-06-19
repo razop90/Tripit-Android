@@ -58,8 +58,8 @@ public class SqlModel {
                     long lastUpdate = cursor.getLong(lastUpdateIndex);
                     int isDeleted = cursor.getInt(isDeletedIndex);
 
-                    Post post = new Post(curUserId, id, location, description, creationDate, imageUrl, lastUpdate);
-                    post.isDeleted = isDeleted;
+                    Post post = new Post(curUserId, id, location, description, creationDate, imageUrl, lastUpdate, isDeleted);
+                    //curUserId, location, description, imageUrl
 
                     data.add(post);
                 } while (cursor.moveToNext());
@@ -212,7 +212,7 @@ public class SqlModel {
     class MyHelper extends SQLiteOpenHelper {
 
         public MyHelper(Context context) {
-            super(context, "database.db", null, 10);
+            super(context, "database.db", null, 13);
         }
 
         @Override

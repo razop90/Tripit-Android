@@ -24,7 +24,7 @@ public class Post {
     @Exclude
     public long lastUpdateLongFormat;
     public String imageUrl;
-    public  HashMap<String, String> likes; //contains user id's
+    public  HashMap<String, String> likes;//contains user id's
     public int isDeleted; //0 for false, 1 for true
     public ArrayList<Comment> comments;
 
@@ -62,10 +62,14 @@ public class Post {
         try {
             lastUpdateLongFormat = (long)lastUpdate;
         } catch (Exception e) { }
-        //isDeleted = (int) values.get("isDeleted");
+
+        try {
+            long del = (long)values.get("isDeleted");
+            isDeleted = (int)del;
+        } catch (Exception e) { }
     }
 
-    public Post(String _userID,String _id,String _location,String _description,long _creationDate,String _imageUrl,long _lastUpdate){
+    public Post(String _userID,String _id,String _location,String _description,long _creationDate,String _imageUrl,long _lastUpdate, int _isDeleted){
         id = _id;
         userID = _userID;
         location = _location;
@@ -76,7 +80,7 @@ public class Post {
         creationDate = _creationDate;
         //creationDateStringFormat = Consts.General.convertTimestampToStringDate(self.creationDate)
         lastUpdate = _lastUpdate;
-        isDeleted = 0;
+        isDeleted = _isDeleted;
     }
 
     public Post(String _userID,String _location,String _description,String _imageUrl){
@@ -101,4 +105,10 @@ public class Post {
         if(likes.containsKey(userId))
             likes.remove(userId);
     }
+
+    public String getImage() {
+        return imageUrl;
+    }
+
+
 }
