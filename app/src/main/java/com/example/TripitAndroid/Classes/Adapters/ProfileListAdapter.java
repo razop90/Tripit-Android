@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -68,7 +71,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             mDeleteListener = deleteListener;
         }
 
-        PostRowViewHolder viewHolder = new PostRowViewHolder(mData.get(i).id,view, mListener, mDeleteListener);
+        PostRowViewHolder viewHolder = new PostRowViewHolder(mData.get(i),mData.get(i).id,view, mListener, mDeleteListener);
         return viewHolder;
     }
 
@@ -95,11 +98,13 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         TextView description;
         TextView creationDate;
         String mid;
+        Post mPost;
 
 
-        public PostRowViewHolder(String id,@NonNull View itemView, final OnItemClickListener listener, final OnDeleteClickListener deleteListener) {
+        public PostRowViewHolder(Post p, String id,@NonNull View itemView, final OnItemClickListener listener, final OnDeleteClickListener deleteListener) {
             super(itemView);
             mid = id;
+            mPost = p;
             likeButton = itemView.findViewById(R.id.row_like_button);
             commentButton = itemView.findViewById(R.id.row_comment_button);
             profileImage = itemView.findViewById(R.id.row_profile_image);
@@ -153,6 +158,11 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
                 @Override
                 public void onClick(View v) {
 
+                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                    final AddPostFragment myFragment = new AddPostFragment();
+                    myFragment.setPost(mPost,mid);
+                    //activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_navigation, myFragment).addToBackStack(null).commit();
+                    activity.getSupportFragmentManager().beginTransaction().add(R.id.main_navigation, myFragment).commit();
                 }
             });
         }

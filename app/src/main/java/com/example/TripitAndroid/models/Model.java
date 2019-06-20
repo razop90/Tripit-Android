@@ -38,6 +38,7 @@ public class Model {
     public OnPostUpdatedListener onPostUpdatedListener;
     public OnPostUpdatedListener onUserPostUpdatedListener;
     public OnUserInfoUpdated onUserInfoUpdated;
+    public OnUserInfoUpdated onPostGetListener;
     public OnAddPostCompleteListener onAddPostCompleteListener;
     public SaveImageListener saveImageListener;
     public GetImageListener getImageListener;
@@ -58,6 +59,11 @@ public class Model {
         void fail();
     }
 
+    public interface GetImageBitMapListener{
+        void onComplete(Bitmap bitMap);
+        void fail();
+    }
+
     private interface OnGetPostsCompleteListener {
         void onGetPostsComplete(boolean isUpdated, boolean curUserUpdated);
     }
@@ -66,6 +72,10 @@ public class Model {
     }
     public interface OnUserInfoUpdated {
         void onUserInfoUpdated(UserInfo userInfo);
+    }
+
+    public interface OnPostGetListener {
+        void OnPostGetListener(String postId);
     }
     //endregion
 
@@ -159,6 +169,10 @@ public class Model {
         }
 
         callback.onGetPostsComplete(isUpdated, currUserUpdated);
+    }
+
+    public void getPost(String postId, FirebaseModel.OnGetPostCompletedListener callback) {
+        firebaseModel.getPost(postId, callback);
     }
 
     public void addPost(Post post, FirebaseModel.OnAddPostCompleteListener callback) {
@@ -318,6 +332,32 @@ public class Model {
         }else {
             Log.d("TAG","OK reading cache image: " + localFileName);
             listener.onComplete(image.toString());
+        }}
+
+    public void getImageBitMap(final String url, final GetImageBitMapListener listener) {
+        //1. first try to find the image on the device
+        String localFileName = getLocalImageFileName(url);
+        final Bitmap image = loadImageFromFile(localFileName);
+        if (image == null) { //if image not found - try downloading it from parse
+            firebaseModel.getImage(url, new GetImageListener() {
+                @Override
+                public void onComplete(String url) {
+                    //2. save the image localy
+                    String localFileName = getLocalImageFileName(url);
+                    Log.d("TAG","save image to cache: " + localFileName);
+                    saveImageToFile(image,localFileName);
+                    //3. return the image using the listener
+                    listener.onComplete(image);
+                }
+
+                @Override
+                public void fail() {
+                    listener.fail();
+                }
+            });
+        }else {
+            Log.d("TAG","OK reading cache image: " + localFileName);
+            listener.onComplete(image);
         }}
 
 //    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {

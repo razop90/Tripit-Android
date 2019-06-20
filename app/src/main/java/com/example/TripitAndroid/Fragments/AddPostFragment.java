@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,10 +13,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.example.TripitAndroid.Classes.Adapters.ProfileListAdapter;
 import com.example.TripitAndroid.Classes.Comment;
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.R;
@@ -33,12 +37,15 @@ import java.util.HashMap;
  */
 public class AddPostFragment extends Fragment {
 
+    String mPostId;
+    Post mPost = null;
     ImageView postImageView;
     ProgressBar progressBar;
     EditText descriptionPost;
     EditText locationPost;
     Button takePicBtn ;
     Button uploadPostBtn;
+
 
     public AddPostFragment() {
         // Required empty public constructor
@@ -52,15 +59,12 @@ public class AddPostFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_new_post, container, false);
 
-
         postImageView = (ImageView) view.findViewById(R.id.post_image);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         descriptionPost = (EditText) view.findViewById(R.id.description_on_post_txt);
         locationPost = (EditText) view.findViewById(R.id.location_on_post_txt);
         takePicBtn = (Button) view.findViewById(R.id.take_pic_btn);
         uploadPostBtn = (Button) view.findViewById(R.id.upload_post_btn);
-        //progressBar.setVisibility(View.INVISIBLE);
-
 
         takePicBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +72,6 @@ public class AddPostFragment extends Fragment {
                 takePic();
             }
         });
-
         uploadPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +79,40 @@ public class AddPostFragment extends Fragment {
             }
         });
 
+        if (mPostId != null) {
+
+
+            String iurl = mPost.imageUrl;
+            String desc = mPost.description;
+            String loc = mPost.location;
+
+            //postImageView.set
+            //postImageView.setImageBitmap(); new Model.GetImageListener()
+
+         Model.instance.getImageBitMap(iurl, new Model.GetImageBitMapListener() {
+             @Override
+             public void onComplete(Bitmap bitMap) {
+                 postImageView.setImageBitmap(bitMap);
+             }
+
+             @Override
+             public void fail() {
+
+             }
+         });
+            descriptionPost.setText(desc);
+            locationPost.setText(loc);
+
+        }
+
+
+
         return view;
+    }
+
+    public void setPost(Post post, String postId){
+        mPostId = postId;
+        mPost = post;
     }
 
 
@@ -110,17 +146,28 @@ public class AddPostFragment extends Fragment {
             @Override
             public void onComplete(String url) {
                 FirebaseUser user =  Model.instance.currentUser();
+                if(mPost == null) {
+                    Post p = new Post(user.getUid(), locationPost.getText().toString(), descriptionPost.getText().toString(), url);
+                    // save Post
+                    Model.instance.addPost(p, new FirebaseModel.OnAddPostCompleteListener() {
+                        @Override
+                        public void onAddPostsComplete() {
 
-                Post p = new Post(user.getUid() ,locationPost.getText().toString(), descriptionPost.getText().toString(), url);
-                // save Post
-                Model.instance.addPost(p, new FirebaseModel.OnAddPostCompleteListener() {
-                    @Override
-                    public  void onAddPostsComplete() {
+                            //progressBar.setVisibility(View.INVISIBLE);
+                            fragment.getActivity().onBackPressed();
+                        }
+                    });
+                }
+                else{
+                    boolean isImageUpdated = false;
 
-                        //progressBar.setVisibility(View.INVISIBLE);
-                        fragment.getActivity().onBackPressed();
-                    }
-                });
+                    Model.instance.updatePost(mPost, isImageUpdated, new FirebaseModel.OnAddPostCompleteListener() {
+                        @Override
+                        public void onAddPostsComplete() {
+
+                        }
+                    });
+                }
             }
 
             @Override
