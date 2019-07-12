@@ -79,6 +79,16 @@ public class AddPostFragment extends Fragment {
             }
         });
 
+        descriptionPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (descriptionPost.toString() != null){
+                    descriptionPost.findViewById(R.id.description_on_post_txt);
+                }
+            }
+        });
+
+
         if (mPostId != null) {
 
 
@@ -92,6 +102,7 @@ public class AddPostFragment extends Fragment {
          Model.instance.getImageBitMap(iurl, new Model.GetImageBitMapListener() {
              @Override
              public void onComplete(Bitmap bitMap) {
+                 Bitmap a =  bitMap;
                  postImageView.setImageBitmap(bitMap);
              }
 
@@ -146,6 +157,7 @@ public class AddPostFragment extends Fragment {
             @Override
             public void onComplete(String url) {
                 FirebaseUser user =  Model.instance.currentUser();
+
                 if(mPost == null) {
                     Post p = new Post(user.getUid(), locationPost.getText().toString(), descriptionPost.getText().toString(), url);
                     // save Post
@@ -164,6 +176,9 @@ public class AddPostFragment extends Fragment {
                     Model.instance.updatePost(mPost, isImageUpdated, new FirebaseModel.OnAddPostCompleteListener() {
                         @Override
                         public void onAddPostsComplete() {
+
+                            fragment.getActivity().onBackPressed();
+
 
                         }
                     });

@@ -339,9 +339,9 @@ public class Model {
         String localFileName = getLocalImageFileName(url);
         final Bitmap image = loadImageFromFile(localFileName);
         if (image == null) { //if image not found - try downloading it from parse
-            firebaseModel.getImage(url, new GetImageListener() {
+            firebaseModel.getImageBitMap(url, new GetImageBitMapListener() {
                 @Override
-                public void onComplete(String url) {
+                public void onComplete(Bitmap bitMap) {
                     //2. save the image localy
                     String localFileName = getLocalImageFileName(url);
                     Log.d("TAG","save image to cache: " + localFileName);
@@ -351,14 +351,15 @@ public class Model {
                 }
 
                 @Override
-                public void fail() {
+                public void fail()  {
                     listener.fail();
                 }
             });
         }else {
             Log.d("TAG","OK reading cache image: " + localFileName);
             listener.onComplete(image);
-        }}
+            }}
+
 
 //    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
 //        firebaseModel.saveImage(imageBitmap, listener);
