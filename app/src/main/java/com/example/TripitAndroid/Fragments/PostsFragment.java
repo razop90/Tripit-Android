@@ -26,6 +26,8 @@ import com.example.TripitAndroid.models.Model;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -35,14 +37,11 @@ import java.util.Vector;
  */
 public class PostsFragment extends Fragment {
 
-    private TextView mTextMessage;
     RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLyoutManager;
     PostsListAdapter mAdapter;
-    Vector<String> mData = new Vector<String>();
 
     public PostsFragment() {
-        // Required empty public constructor
+        // Requires empty public constructor
     }
 
     @Override
@@ -56,6 +55,15 @@ public class PostsFragment extends Fragment {
         Model.instance.getAllPosts(new Model.OnPostUpdatedListener() {
             @Override
             public void onPostUpdated(ArrayList<Post> posts) {
+
+                Collections.sort(posts, new Comparator<Post>() {
+                    @Override
+                    public int compare(Post lhs, Post rhs) {
+                        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                        return lhs.creationDateLongFormat > rhs.creationDateLongFormat ? -1 : (lhs.creationDateLongFormat < rhs.creationDateLongFormat ) ? 1 : 0;
+                    }
+                });
+
                 mAdapter = new PostsListAdapter(posts);
 
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -64,23 +72,6 @@ public class PostsFragment extends Fragment {
             }
         });
 
-        //mTextMessage = view.findViewById(R.id.message);
-
-        FirebaseUser user = Model.instance.currentUser();
-        if (user != null) {
-            String email = user.getEmail();
-            String uid = user.getUid();
-
-
-            Toast.makeText(getActivity(), email, Toast.LENGTH_LONG).show();
-        }
-
-//        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
-
-        // Inflate the layout for this fragment
         return view;
     }
 }

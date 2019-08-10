@@ -212,7 +212,7 @@ public class SqlModel {
     class MyHelper extends SQLiteOpenHelper {
 
         public MyHelper(Context context) {
-            super(context, "database.db", null, 13);
+            super(context, "database.db", null, 16);
         }
 
         @Override

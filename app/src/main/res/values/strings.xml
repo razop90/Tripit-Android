@@ -2,12 +2,13 @@
     <string name="app_name">TripitAndroid</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Tripit</string>
+    <string name="nav_header_subtitle">Our Trip In Your Eyes ;)</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Sign Out</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+    <color name="white">#FFFFFF</color>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="posts">Posts</string>
     <string name="new_post">New Post</string>

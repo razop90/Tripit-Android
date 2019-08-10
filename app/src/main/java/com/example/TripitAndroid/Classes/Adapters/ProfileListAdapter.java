@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -35,6 +38,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
     ArrayList<Post> mData;
     ProfileListAdapter.OnItemClickListener mListener;
     ProfileListAdapter.OnDeleteClickListener mDeleteListener;
+    ProfileListAdapter.OnEditClickListener mEditListener;
 
     public ProfileListAdapter(ArrayList<Post> data) {
         mData = data;
@@ -46,6 +50,10 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
     public interface OnDeleteClickListener {
         void onClick(int index);
+    }
+
+    public interface OnEditClickListener {
+        void onClick(View view, int index);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -64,11 +72,29 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             }
         };
 
+        OnEditClickListener editListener = new OnEditClickListener() {
+            @Override
+            public void onClick(View view, int index) {
+                Post post = mData.get(index);
+
+                if(post != null && view != null) {
+                    AppCompatActivity activity = (AppCompatActivity)view.getContext();
+                    final AddPostFragment myFragment = new AddPostFragment();
+                    myFragment.setPost(post, post.id);
+                    activity.getSupportFragmentManager().beginTransaction().add(R.id.main_navigation, myFragment).commit();
+                }
+            }
+        };
+
         if(mDeleteListener == null) {
             mDeleteListener = deleteListener;
         }
 
-        PostRowViewHolder viewHolder = new PostRowViewHolder(mData.get(i).id,view, mListener, mDeleteListener);
+        if(mEditListener == null) {
+            mEditListener = editListener;
+        }
+
+        PostRowViewHolder viewHolder = new PostRowViewHolder(mData.get(i),mData.get(i).id,view, mListener, mDeleteListener, mEditListener);
         return viewHolder;
     }
 
@@ -95,11 +121,13 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         TextView description;
         TextView creationDate;
         String mid;
+        Post mPost;
 
 
-        public PostRowViewHolder(String id,@NonNull View itemView, final OnItemClickListener listener, final OnDeleteClickListener deleteListener) {
+        public PostRowViewHolder(Post p, String id,@NonNull View itemView, final OnItemClickListener listener, final OnDeleteClickListener deleteListener, final OnEditClickListener editListener) {
             super(itemView);
             mid = id;
+            mPost = p;
             likeButton = itemView.findViewById(R.id.row_like_button);
             commentButton = itemView.findViewById(R.id.row_comment_button);
             profileImage = itemView.findViewById(R.id.row_profile_image);
@@ -152,60 +180,26 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    int index = getAdapterPosition();
+                    if (editListener != null) {
+                        if (index != RecyclerView.NO_POSITION) {
+                            editListener.onClick(v, index);
+                        }
+                    }
                 }
             });
         }
 
         public void bind(Post post) {
-            final String userID = post.userID;
+            // user photo
+            profileImage.setTag(post.id);
+            profileImage.setImageResource(R.drawable.default_profile);
+            setUserInfo(post.userID, R.drawable.default_profile);
 
-            Model.instance.getUserInfo(userID, new Model.OnUserInfoUpdated() {
-                @Override
-                public void onUserInfoUpdated(UserInfo userInfo) {
-                    if (userInfo != null) {
-                        userName.setText(userInfo.displayName);
-                    }
-                    else userName.setText(userID);
-                }
-            });
-
-            //Photo
+            // main photo
             mainImage.setTag(post.id);
             mainImage.setImageResource(R.drawable.empty);
-
-            if(post.getImage() != null) {
-                Picasso.get().setIndicatorsEnabled(true);
-                final String postID = post.id;
-
-                Target target = new Target(){
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        if (mainImage.getTag() == postID) {
-                            mainImage.setImageBitmap(bitmap);
-                            mainImage.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        mainImage.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        mainImage.setVisibility(View.VISIBLE);
-                    }
-                };
-                String a = post.getImage();
-                Picasso.get().load(post.getImage())
-                        .placeholder(R.drawable.empty)
-                        .into(mainImage);
-
-            }else{
-                mainImage.setVisibility(View.INVISIBLE);
-            }
-
+            setImage(mainImage, post.getImage(), R.drawable.empty);
 
             //Fields:
             location.setText(post.location);
@@ -219,8 +213,33 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
                 drawable = R.drawable.like_pressed;
             likeButton.setBackgroundResource(drawable);
         }
-    }
 
+        private void setImage(final ImageView image, String path, int defaultImageIndex) {
+            if(path != null && path.trim().length() != 0) {
+                Picasso.get().setIndicatorsEnabled(true);
+
+                Picasso.get().load(path)
+                        .placeholder(defaultImageIndex)
+                        .into(image);
+            }
+        }
+
+        private void setUserInfo(final String userId, final int defaultImageIndex) {
+            Model.instance.getUserInfo(userId, new Model.OnUserInfoUpdated() {
+                @Override
+                public void onUserInfoUpdated(UserInfo userInfo) {
+                    if (userInfo != null) {
+                        userName.setText(userInfo.displayName);
+                        setImage(profileImage, userInfo.profileImageUrl, defaultImageIndex);
+                    }
+                    else {
+                        userName.setText(userId);
+                        setUserInfo(userId, defaultImageIndex);
+                    }
+                }
+            });
+        }
+    }
 }
 
 

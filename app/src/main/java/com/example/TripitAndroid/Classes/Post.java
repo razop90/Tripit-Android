@@ -50,12 +50,6 @@ public class Post {
         comments = new ArrayList<>();
         creationDate = values.get("creationDate");
 
-        creationDateLongFormat = 0;
-        try {
-            creationDateLongFormat = (long)creationDate;
-        } catch (Exception e) { }
-
-        creationDateStringFormat = Consts.General.convertTimestampToStringDate(creationDateLongFormat, null);
         lastUpdate =  values.get("lastUpdate");
 
         lastUpdateLongFormat = 0;
@@ -67,6 +61,8 @@ public class Post {
             long del = (long)values.get("isDeleted");
             isDeleted = (int)del;
         } catch (Exception e) { }
+
+        BuildCreationParameters();
     }
 
     public Post(String _userID,String _id,String _location,String _description,long _creationDate,String _imageUrl,long _lastUpdate, int _isDeleted){
@@ -78,9 +74,10 @@ public class Post {
         likes = new HashMap<String, String>();
         comments = new ArrayList<Comment>();
         creationDate = _creationDate;
-        //creationDateStringFormat = Consts.General.convertTimestampToStringDate(self.creationDate)
         lastUpdate = _lastUpdate;
         isDeleted = _isDeleted;
+
+        BuildCreationParameters();
     }
 
     public Post(String _userID,String _location,String _description,String _imageUrl){
@@ -110,5 +107,12 @@ public class Post {
         return imageUrl;
     }
 
+    private void BuildCreationParameters() {
+        creationDateLongFormat = 0;
+        try {
+            creationDateLongFormat = (long)creationDate;
+        } catch (Exception e) { }
 
+        creationDateStringFormat = Consts.General.convertTimestampToStringDate(creationDateLongFormat, null);
+    }
 }

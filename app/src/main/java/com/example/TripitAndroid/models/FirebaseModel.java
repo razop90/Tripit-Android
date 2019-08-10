@@ -72,6 +72,8 @@ public class FirebaseModel {
     OnSignUpCompleteListener signUpCompleteListener;
     OnAddUserInfoCompletedListener userInfoAddCompleteListener;
     OnGetUserInfoCompletedListener userInfoGetCompleteListener;
+    OnGetPostCompletedListener postCompletedListener;
+
 
     public interface OnGetPostsCompleteListener {
         void onGetPostsComplete(ArrayList<Post> data);
@@ -103,6 +105,10 @@ public class FirebaseModel {
 
     public interface OnGetUserInfoCompletedListener {
         void onUserInfoGetComplete(UserInfo userInfo);
+    }
+
+    public interface OnGetPostCompletedListener {
+        void OnGetPostComplete(Post post);
     }
     //endregion
 
@@ -325,6 +331,52 @@ public class FirebaseModel {
         }
     }
 
+    public void getPost(final String postId, OnGetPostCompletedListener callback) {
+        postCompletedListener = callback;
+
+        DatabaseReference stRef = ref.child(Consts.Tables.PostsTableName);
+        Query fbQuery = stRef.equalTo(postId);
+
+        stRef.child(postId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Post post = dataSnapshot.getValue(Post.class);
+                postCompletedListener.OnGetPostComplete(post);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                if (postCompletedListener != null)
+                    postCompletedListener.OnGetPostComplete(null);
+            }
+
+        });
+
+//
+//        ValueEventListener valueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                notifyDataChanged(dataSnapshot);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                if (postCompletedListener != null)
+//                    postCompletedListener.OnGetPostComplete(null);
+//
+//            }
+//
+//            public void notifyDataChanged(DataSnapshot dataSnapshot) {
+//                String description = dataSnapshot.getValue(Post.class).description;
+//                String location = dataSnapshot.getValue(Post.class).location;
+//                String imageURL = dataSnapshot.getValue(Post.class).getImage();
+//                Post post = dataSnapshot.getValue(Post.class);
+//                postCompletedListener.OnGetPostComplete(post);
+//            }
+//        };
+
+    }
+
     public void getUserInfo(final String uid, OnGetUserInfoCompletedListener callback) {
         userInfoGetCompleteListener = callback;
 
@@ -516,6 +568,26 @@ public class FirebaseModel {
             public void onSuccess(byte[] bytes) {
                 Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
                 listener.onComplete(image.toString());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception exception) {
+                Log.d("TAG",exception.getMessage());
+                listener.fail();
+
+            }
+        });
+    }
+
+    public void getImageBitMap(String url, final Model.GetImageBitMapListener listener){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference httpsReference = storage.getReferenceFromUrl(url);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        httpsReference.getBytes(3*ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                listener.onComplete(image);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
