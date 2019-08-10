@@ -191,52 +191,15 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         }
 
         public void bind(Post post) {
-            final String userID = post.userID;
+            // user photo
+            profileImage.setTag(post.id);
+            profileImage.setImageResource(R.drawable.default_profile);
+            setUserInfo(post.userID, R.drawable.default_profile);
 
-            Model.instance.getUserInfo(userID, new Model.OnUserInfoUpdated() {
-                @Override
-                public void onUserInfoUpdated(UserInfo userInfo) {
-                    if (userInfo != null) {
-                        userName.setText(userInfo.displayName);
-                    }
-                    else userName.setText(userID);
-                }
-            });
-
-            //Photo
+            // main photo
             mainImage.setTag(post.id);
             mainImage.setImageResource(R.drawable.empty);
-
-            String imagePath = post.getImage();
-
-            if(imagePath != null && imagePath.trim().length() != 0) {
-                Picasso.get().setIndicatorsEnabled(true);
-                final String postID = post.id;
-
-                Target target = new Target(){
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        if (mainImage.getTag() == postID) {
-                            mainImage.setImageBitmap(bitmap);
-                            mainImage.setVisibility(View.INVISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        mainImage.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        mainImage.setVisibility(View.VISIBLE);
-                    }
-                };
-
-                Picasso.get().load(imagePath)
-                            .placeholder(R.drawable.empty)
-                            .into(mainImage);
-            }
+            setImage(mainImage, post.getImage(), R.drawable.empty);
 
             //Fields:
             location.setText(post.location);
@@ -250,8 +213,33 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
                 drawable = R.drawable.like_pressed;
             likeButton.setBackgroundResource(drawable);
         }
-    }
 
+        private void setImage(final ImageView image, String path, int defaultImageIndex) {
+            if(path != null && path.trim().length() != 0) {
+                Picasso.get().setIndicatorsEnabled(true);
+
+                Picasso.get().load(path)
+                        .placeholder(defaultImageIndex)
+                        .into(image);
+            }
+        }
+
+        private void setUserInfo(final String userId, final int defaultImageIndex) {
+            Model.instance.getUserInfo(userId, new Model.OnUserInfoUpdated() {
+                @Override
+                public void onUserInfoUpdated(UserInfo userInfo) {
+                    if (userInfo != null) {
+                        userName.setText(userInfo.displayName);
+                        setImage(profileImage, userInfo.profileImageUrl, defaultImageIndex);
+                    }
+                    else {
+                        userName.setText(userId);
+                        setUserInfo(userId, defaultImageIndex);
+                    }
+                }
+            });
+        }
+    }
 }
 
 

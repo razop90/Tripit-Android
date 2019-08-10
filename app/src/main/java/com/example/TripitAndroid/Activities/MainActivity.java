@@ -3,6 +3,7 @@ package com.example.TripitAndroid.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.R;
 import com.example.TripitAndroid.Fragments.TimePickerDialogFragment;
 import com.example.TripitAndroid.models.FirebaseModel;
@@ -13,6 +14,8 @@ import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,8 +31,13 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity{
+
+    TextView userNameText;
+    ImageView userImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,36 @@ public class MainActivity extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        // Getting user name to display in the menu bar
+        userNameText = findViewById(R.id.userName);
+        userImageView = findViewById(R.id.imageView);
+
+        if(userNameText != null) {
+            userNameText.setText("");
+            FirebaseUser user = Model.instance.currentUser();
+            if(user != null) {
+                Model.instance.getUserInfo(user.getUid(), new Model.OnUserInfoUpdated() {
+                    @Override
+                    public void onUserInfoUpdated(UserInfo userInfo) {
+                        if (userInfo != null) {
+                            userNameText.setText("Hello " + userInfo.displayName);
+
+                            if(userImageView != null) {
+                                if(userInfo.profileImageUrl != null && userInfo.profileImageUrl.trim().length() != 0) {
+                                    Picasso.get().setIndicatorsEnabled(true);
+
+                                    Picasso.get().load(userInfo.profileImageUrl)
+                                            .placeholder(R.drawable.default_profile)
+                                            .into(userImageView);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
         return true;
     }
 
