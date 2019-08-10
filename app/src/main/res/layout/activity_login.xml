@@ -19,10 +19,10 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_email" />
+        app:layout_constraintTop_toBottomOf="@+id/login_email" />
 
     <EditText
-        android:id="@+id/register_password"
+        android:id="@+id/login_password"
         android:layout_width="261dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tripit_logo" />
 
     <EditText
-        android:id="@+id/register_email"
+        android:id="@+id/login_email"
         android:layout_width="259dp"
         android:layout_height="38dp"
         android:layout_marginStart="8dp"
@@ -104,7 +104,7 @@
         app:layout_constraintBottom_toTopOf="@+id/register_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_password" />
+        app:layout_constraintTop_toBottomOf="@+id/login_password" />
 
     <Button
         android:id="@+id/register_button"
@@ -123,8 +123,8 @@
         app:layout_constraintTop_toBottomOf="@+id/login_button" />
 
     <ProgressBar
-        android:id="@+id/register_progressbar"
-        style="?android:attr/progressBarStyle"
+        android:id="@+id/login_progressbar"
+        style="@android:style/Widget.ProgressBar.Inverse"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"

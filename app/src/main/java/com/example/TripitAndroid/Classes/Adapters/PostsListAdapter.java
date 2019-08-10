@@ -113,31 +113,39 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             });
         }
 
-        public void bind(Post post) {
+        public void bind(final Post post) {
             final String userID = post.userID;
 
-            Model.instance.getUserInfo(userID, new Model.OnUserInfoUpdated() {
-                @Override
-                public void onUserInfoUpdated(UserInfo userInfo) {
-                    if (userInfo != null) userName.setText(userInfo.displayName);
-                    else userName.setText(userID);
-                }
-            });
+            setUserInfo(userID, post.id);
 
             //photo
             mainImage.setTag(post.id);
             mainImage.setImageResource(R.drawable.empty);
 
-            if(post.getImage() != null) {
+            setImage(mainImage, post.getImage(), post.id);
+
+            //Fields:
+            location.setText(post.location);
+            description.setText(post.description);
+            creationDate.setText(post.creationDateStringFormat);
+
+            //Like button image:
+            @DrawableRes int drawable = R.drawable.like_unpressed;
+            if (post.likes.containsKey(post.userID))
+                drawable = R.drawable.like_pressed;
+            likeButton.setBackgroundResource(drawable);
+        }
+
+        private void setImage(final ImageView image, String path, final String postId) {
+            if(path != null && path.trim().length() != 0) {
                 Picasso.get().setIndicatorsEnabled(true);
-                final String postID = post.id;
 
                 Target target = new Target(){
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        if (mainImage.getTag() == postID) {
-                            mainImage.setImageBitmap(bitmap);
-                            mainImage.setVisibility(View.INVISIBLE);
+                        if (image.getTag() == postId) {
+                            image.setImageBitmap(bitmap);
+                            image.setVisibility(View.INVISIBLE);
                         }
                     }
 
@@ -151,26 +159,27 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                         mainImage.setVisibility(View.VISIBLE);
                     }
                 };
-                String a = post.getImage();
-                Picasso.get().load(post.getImage())
+
+                Picasso.get().load(path)
                         .placeholder(R.drawable.empty)
                         .into(mainImage);
-
-            }else{
-                mainImage.setVisibility(View.INVISIBLE);
             }
+        }
 
-
-            //Fields:
-            location.setText(post.location);
-            description.setText(post.description);
-            creationDate.setText(post.creationDateStringFormat);
-
-            //Like button image:
-            @DrawableRes int drawable = R.drawable.like_unpressed;
-            if (post.likes.containsKey(post.userID))
-                drawable = R.drawable.like_pressed;
-            likeButton.setBackgroundResource(drawable);
+        private void setUserInfo(final String userId, final String postId) {
+            Model.instance.getUserInfo(userId, new Model.OnUserInfoUpdated() {
+                @Override
+                public void onUserInfoUpdated(UserInfo userInfo) {
+                    if (userInfo != null) {
+                        userName.setText(userInfo.displayName);
+                        //setImage(profileImage, userInfo.profileImageUrl, postId);
+                    }
+                    else {
+                        userName.setText(userId);
+                        setUserInfo(userId, postId);
+                    }
+                }
+            });
         }
     }
 }

@@ -26,6 +26,8 @@ import com.example.TripitAndroid.models.Model;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -56,6 +58,15 @@ public class PostsFragment extends Fragment {
         Model.instance.getAllPosts(new Model.OnPostUpdatedListener() {
             @Override
             public void onPostUpdated(ArrayList<Post> posts) {
+
+                Collections.sort(posts, new Comparator<Post>() {
+                    @Override
+                    public int compare(Post lhs, Post rhs) {
+                        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                        return lhs.creationDateLongFormat > rhs.creationDateLongFormat ? -1 : (lhs.creationDateLongFormat < rhs.creationDateLongFormat ) ? 1 : 0;
+                    }
+                });
+
                 mAdapter = new PostsListAdapter(posts);
 
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());

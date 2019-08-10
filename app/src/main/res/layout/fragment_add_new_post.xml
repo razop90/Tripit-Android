@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="-400dp"
         android:layout_marginTop="435dp"
-        android:text="Location::"
+        android:text="Location:"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_image" />
@@ -78,16 +78,6 @@
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
-
-    <Button
-        android:id="@+id/upload_post_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="-265dp"
-        android:layout_marginTop="569dp"
-        android:layout_marginBottom="10dp"
-        android:text="Upload Post" />
-
     <ProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyle"
@@ -97,4 +87,14 @@
         android:layout_marginTop="523dp"
         android:layout_marginEnd="10dp"
         android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/upload_post_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-265dp"
+        android:layout_marginTop="530dp"
+        android:layout_marginBottom="10dp"
+        android:text="Upload Post" />
+
 </LinearLayout>

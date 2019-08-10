@@ -105,6 +105,7 @@ public class Model {
         onPostUpdatedListener = callback;
         long lastUpdated = sqlModel.getLastUpdate(Consts.SQL.PostsTableName);
         lastUpdated += 1;
+        lastUpdated = 0;
 
         firebaseModel.getAllPostsFromDate(lastUpdated, new FirebaseModel.OnGetPostsCompleteListener() {
             @Override
@@ -136,6 +137,7 @@ public class Model {
     private void sqlHandler(List<Post> data, OnGetPostsCompleteListener callback) {
         long lastUpdated = sqlModel.getLastUpdate(Consts.SQL.PostsTableName);
         lastUpdated += 1;
+        lastUpdated = 0;
         boolean isUpdated = false;
         boolean currUserUpdated = false;
 
@@ -197,6 +199,7 @@ public class Model {
                 if(userInfo != null) {
                     long lastUpdated = sqlModel.getLastUpdate(Consts.SQL.UserInfoTableName);
                     lastUpdated += 1;
+                    lastUpdated = 0;
 
                     sqlModel.addUserInfo(userInfo);
 

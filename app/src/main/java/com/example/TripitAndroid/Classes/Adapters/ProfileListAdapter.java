@@ -184,7 +184,9 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             mainImage.setTag(post.id);
             mainImage.setImageResource(R.drawable.empty);
 
-            if(post.getImage() != null) {
+            String imagePath = post.getImage();
+
+            if(imagePath != null && imagePath.trim().length() != 0) {
                 Picasso.get().setIndicatorsEnabled(true);
                 final String postID = post.id;
 
@@ -207,15 +209,11 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
                         mainImage.setVisibility(View.VISIBLE);
                     }
                 };
-                String a = post.getImage();
-                Picasso.get().load(post.getImage())
-                        .placeholder(R.drawable.empty)
-                        .into(mainImage);
 
-            }else{
-                mainImage.setVisibility(View.INVISIBLE);
+                Picasso.get().load(imagePath)
+                            .placeholder(R.drawable.empty)
+                            .into(mainImage);
             }
-
 
             //Fields:
             location.setText(post.location);

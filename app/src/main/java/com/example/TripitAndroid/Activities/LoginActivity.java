@@ -28,9 +28,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailText = findViewById(R.id.register_email);
-        passwordText = findViewById(R.id.register_password);
-        progressBar = findViewById(R.id.register_progressbar);
+        emailText = findViewById(R.id.login_email);
+        passwordText = findViewById(R.id.login_password);
+        progressBar = findViewById(R.id.login_progressbar);
         progressBar.setVisibility(View.INVISIBLE);
 
         FirebaseApp.initializeApp(this);
