@@ -38,6 +38,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
     ArrayList<Post> mData;
     ProfileListAdapter.OnItemClickListener mListener;
     ProfileListAdapter.OnDeleteClickListener mDeleteListener;
+    ProfileListAdapter.OnEditClickListener mEditListener;
 
     public ProfileListAdapter(ArrayList<Post> data) {
         mData = data;
@@ -49,6 +50,10 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
     public interface OnDeleteClickListener {
         void onClick(int index);
+    }
+
+    public interface OnEditClickListener {
+        void onClick(View view, int index);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -67,11 +72,29 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             }
         };
 
+        OnEditClickListener editListener = new OnEditClickListener() {
+            @Override
+            public void onClick(View view, int index) {
+                Post post = mData.get(index);
+
+                if(post != null && view != null) {
+                    AppCompatActivity activity = (AppCompatActivity)view.getContext();
+                    final AddPostFragment myFragment = new AddPostFragment();
+                    myFragment.setPost(post, post.id);
+                    activity.getSupportFragmentManager().beginTransaction().add(R.id.main_navigation, myFragment).commit();
+                }
+            }
+        };
+
         if(mDeleteListener == null) {
             mDeleteListener = deleteListener;
         }
 
-        PostRowViewHolder viewHolder = new PostRowViewHolder(mData.get(i),mData.get(i).id,view, mListener, mDeleteListener);
+        if(mEditListener == null) {
+            mEditListener = editListener;
+        }
+
+        PostRowViewHolder viewHolder = new PostRowViewHolder(mData.get(i),mData.get(i).id,view, mListener, mDeleteListener, mEditListener);
         return viewHolder;
     }
 
@@ -101,7 +124,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
         Post mPost;
 
 
-        public PostRowViewHolder(Post p, String id,@NonNull View itemView, final OnItemClickListener listener, final OnDeleteClickListener deleteListener) {
+        public PostRowViewHolder(Post p, String id,@NonNull View itemView, final OnItemClickListener listener, final OnDeleteClickListener deleteListener, final OnEditClickListener editListener) {
             super(itemView);
             mid = id;
             mPost = p;
@@ -157,12 +180,12 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                    final AddPostFragment myFragment = new AddPostFragment();
-                    myFragment.setPost(mPost,mid);
-                    //activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_navigation, myFragment).addToBackStack(null).commit();
-                    activity.getSupportFragmentManager().beginTransaction().add(R.id.main_navigation, myFragment).commit();
+                    int index = getAdapterPosition();
+                    if (editListener != null) {
+                        if (index != RecyclerView.NO_POSITION) {
+                            editListener.onClick(v, index);
+                        }
+                    }
                 }
             });
         }

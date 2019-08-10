@@ -348,9 +348,10 @@ public class Model {
                     //2. save the image localy
                     String localFileName = getLocalImageFileName(url);
                     Log.d("TAG","save image to cache: " + localFileName);
-                    saveImageToFile(image,localFileName);
+
+                    saveImageToFile(bitMap,localFileName);
                     //3. return the image using the listener
-                    listener.onComplete(image);
+                    listener.onComplete(bitMap);
                 }
 
                 @Override

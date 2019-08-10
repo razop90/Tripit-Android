@@ -3,6 +3,7 @@ package com.example.TripitAndroid.Fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.view.Display;
@@ -18,7 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.TripitAndroid.Activities.LoginActivity;
+import com.example.TripitAndroid.Activities.MainActivity;
 import com.example.TripitAndroid.Classes.Adapters.ProfileListAdapter;
 import com.example.TripitAndroid.Classes.Comment;
 import com.example.TripitAndroid.Classes.Post;
@@ -26,6 +30,7 @@ import com.example.TripitAndroid.R;
 
 import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
+import com.google.android.gms.flags.IFlagProvider;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
@@ -90,8 +95,6 @@ public class AddPostFragment extends Fragment {
 
 
         if (mPostId != null) {
-
-
             String iurl = mPost.imageUrl;
             String desc = mPost.description;
             String loc = mPost.location;
@@ -102,7 +105,6 @@ public class AddPostFragment extends Fragment {
          Model.instance.getImageBitMap(iurl, new Model.GetImageBitMapListener() {
              @Override
              public void onComplete(Bitmap bitMap) {
-                 Bitmap a =  bitMap;
                  postImageView.setImageBitmap(bitMap);
              }
 
@@ -113,10 +115,7 @@ public class AddPostFragment extends Fragment {
          });
             descriptionPost.setText(desc);
             locationPost.setText(loc);
-
         }
-
-
 
         return view;
     }
@@ -153,33 +152,53 @@ public class AddPostFragment extends Fragment {
         // activate progress bar
         progressBar.setVisibility(View.VISIBLE);
 
+        try {
+            if(imageBitmap == null) imageBitmap = ((BitmapDrawable)postImageView.getDrawable()).getBitmap();
+        }
+        catch(Exception e) {
+            Toast.makeText(getActivity(), "Error while trying to save post - plz try again", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(imageBitmap == null) {
+            Toast.makeText(getActivity(), "Post must have an image!", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            return;
+        }
+        if(descriptionPost.getText().toString().isEmpty()) {
+            Toast.makeText(getActivity(), "Post must have description!", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            return;
+        }
+        if(locationPost.getText().toString().isEmpty()) {
+            Toast.makeText(getActivity(), "Post must have location!", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            return;
+        }
+
         Model.instance.saveImage(imageBitmap, new Model.SaveImageListener() {
             @Override
             public void onComplete(String url) {
-                FirebaseUser user =  Model.instance.currentUser();
+                FirebaseUser user = Model.instance.currentUser();
 
-                if(mPost == null) {
+                if (mPost == null) {
                     Post p = new Post(user.getUid(), locationPost.getText().toString(), descriptionPost.getText().toString(), url);
                     // save Post
                     Model.instance.addPost(p, new FirebaseModel.OnAddPostCompleteListener() {
                         @Override
                         public void onAddPostsComplete() {
-
-                            //progressBar.setVisibility(View.INVISIBLE);
                             fragment.getActivity().onBackPressed();
                         }
                     });
-                }
-                else{
-                    boolean isImageUpdated = false;
+                } else {
+                    mPost.description = descriptionPost.getText().toString();
+                    mPost.location = locationPost.getText().toString();
+                    mPost.imageUrl = url;
 
-                    Model.instance.updatePost(mPost, isImageUpdated, new FirebaseModel.OnAddPostCompleteListener() {
+                    Model.instance.updatePost(mPost, false, new FirebaseModel.OnAddPostCompleteListener() {
                         @Override
                         public void onAddPostsComplete() {
-
                             fragment.getActivity().onBackPressed();
-
-
                         }
                     });
                 }
@@ -190,5 +209,4 @@ public class AddPostFragment extends Fragment {
             }
         });
     }
-
 }
