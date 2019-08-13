@@ -1,7 +1,5 @@
 package com.example.TripitAndroid.Classes.Adapters;
 
-//import android.media.Image;
-
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,22 +7,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-import android.graphics.drawable.Drawable;
-
-
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.R;
-import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
-
 import java.util.ArrayList;
-import java.util.Vector;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,10 +27,6 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
     public interface OnItemClickListener {
         void onClick(int index);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
     }
 
     @NonNull
@@ -139,11 +123,16 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
         private void setImage(final ImageView image, String path, int defaultImageIndex) {
             if(path != null && path.trim().length() != 0) {
-                Picasso.get().setIndicatorsEnabled(true);
 
-                Picasso.get().load(path)
-                        .placeholder(defaultImageIndex)
-                        .into(image);
+                Model.instance.getImageBitMap(path, new Model.GetImageBitMapListener() {
+                    @Override
+                    public void onComplete(Bitmap bitMap) {
+                        image.setImageBitmap(bitMap);
+                    }
+
+                    @Override
+                    public void fail() { }
+                });
             }
         }
 

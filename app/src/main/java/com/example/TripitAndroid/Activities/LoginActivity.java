@@ -1,9 +1,13 @@
 package com.example.TripitAndroid.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -28,16 +32,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         emailText = findViewById(R.id.login_email);
         passwordText = findViewById(R.id.login_password);
         progressBar = findViewById(R.id.login_progressbar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        FirebaseApp.initializeApp(this);
-        FirebaseUser user = Model.instance.currentUser();
-        if (user != null) {
-            gotoMainView();
-        }
+        progressBar.setVisibility(View.VISIBLE);
+        enabled = false;
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
 
@@ -70,6 +74,28 @@ public class LoginActivity extends AppCompatActivity {
             enabled = true;
             Toast.makeText(LoginActivity.this, "Email address isn't valid", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Log.v("","Permission: "+permissions[0]+ "was "+grantResults[0]);
+            //resume tasks needing this permission
+            initialize();
+        }
+    }
+
+    private void initialize() {
+
+        FirebaseApp.initializeApp(this);
+        FirebaseUser user = Model.instance.currentUser();
+        if (user != null) {
+            gotoMainView();
+        }
+
+        progressBar.setVisibility(View.INVISIBLE);
+        enabled = true;
     }
 
     public void OnRegisterTapped(View view) {

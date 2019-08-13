@@ -113,8 +113,9 @@ public class AddPostFragment extends Fragment {
 
              }
          });
-            descriptionPost.setText(desc);
-            locationPost.setText(loc);
+
+         descriptionPost.setText(desc);
+         locationPost.setText(loc);
         }
 
         return view;

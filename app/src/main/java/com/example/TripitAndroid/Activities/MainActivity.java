@@ -1,24 +1,24 @@
 package com.example.TripitAndroid.Activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.R;
-import com.example.TripitAndroid.Fragments.TimePickerDialogFragment;
 import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,6 +29,7 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -43,6 +44,22 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initialize();
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Log.v("","Permission: "+permissions[0]+ "was "+grantResults[0]);
+            //resume tasks needing this permission
+            initialize();
+        }
+    }
+
+    private void initialize() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,11 +114,15 @@ public class MainActivity extends AppCompatActivity{
 
                             if(userImageView != null) {
                                 if(userInfo.profileImageUrl != null && userInfo.profileImageUrl.trim().length() != 0) {
-                                    Picasso.get().setIndicatorsEnabled(true);
+                                    Model.instance.getImageBitMap(userInfo.profileImageUrl, new Model.GetImageBitMapListener() {
+                                        @Override
+                                        public void onComplete(Bitmap bitMap) {
+                                            userImageView.setImageBitmap(bitMap);
+                                        }
 
-                                    Picasso.get().load(userInfo.profileImageUrl)
-                                            .placeholder(R.drawable.default_profile)
-                                            .into(userImageView);
+                                        @Override
+                                        public void fail() { }
+                                    });
                                 }
                             }
                         }

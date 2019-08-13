@@ -12,25 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.UserInfo;
-import com.example.TripitAndroid.Fragments.AddPostFragment;
 import com.example.TripitAndroid.R;
-import com.example.TripitAndroid.models.FirebaseModel;
 import com.example.TripitAndroid.models.Model;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
@@ -54,10 +44,6 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
     public interface OnEditClickListener {
         void onClick(View view, int index);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
     }
 
     @NonNull
@@ -216,11 +202,16 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
 
         private void setImage(final ImageView image, String path, int defaultImageIndex) {
             if(path != null && path.trim().length() != 0) {
-                Picasso.get().setIndicatorsEnabled(true);
 
-                Picasso.get().load(path)
-                        .placeholder(defaultImageIndex)
-                        .into(image);
+                Model.instance.getImageBitMap(path, new Model.GetImageBitMapListener() {
+                    @Override
+                    public void onComplete(Bitmap bitMap) {
+                        image.setImageBitmap(bitMap);
+                    }
+
+                    @Override
+                    public void fail() { }
+                });
             }
         }
 

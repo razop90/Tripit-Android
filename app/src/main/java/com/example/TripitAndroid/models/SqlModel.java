@@ -5,12 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import com.example.TripitAndroid.Classes.Post;
 import com.example.TripitAndroid.Classes.TripitApplication;
 import com.example.TripitAndroid.Classes.UserInfo;
 import com.example.TripitAndroid.Consts;
-
 import java.util.ArrayList;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -59,8 +57,6 @@ public class SqlModel {
                     int isDeleted = cursor.getInt(isDeletedIndex);
 
                     Post post = new Post(curUserId, id, location, description, creationDate, imageUrl, lastUpdate, isDeleted);
-                    //curUserId, location, description, imageUrl
-
                     data.add(post);
                 } while (cursor.moveToNext());
             }
@@ -204,9 +200,6 @@ public class SqlModel {
             ex.printStackTrace();
         }
     }
-    //endregion
-
-    //region Likes
     //endregion
 
     class MyHelper extends SQLiteOpenHelper {

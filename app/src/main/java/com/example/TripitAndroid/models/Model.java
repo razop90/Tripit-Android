@@ -280,7 +280,7 @@ public class Model {
             File imageFile = new File(dir,imageFileName);
             InputStream inputStream = new FileInputStream(imageFile);
             bitmap = BitmapFactory.decodeStream(inputStream);
-            Log.d("tag","got image from cache: " + imageFileName);
+            //Log.d("tag","got image from cache: " + imageFileName);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -297,7 +297,7 @@ public class Model {
             public void onComplete(String url) {
                 // 2. saving the file localy
                 String localName = getLocalImageFileName(url);
-                Log.d("TAG","cach image: " + localName);
+                //Log.d("TAG","cach image: " + localName);
                 saveImageToFile(imageBitmap,localName); // synchronously save image locally
                 //listener.oncomplete(url);
                 listener.onComplete(url);
@@ -308,7 +308,6 @@ public class Model {
                 listener.fail();
             }
         });
-
     }
 
     public void getImage(final String url, final GetImageListener listener) {
@@ -321,7 +320,7 @@ public class Model {
                 public void onComplete(String url) {
                     //2. save the image localy
                     String localFileName = getLocalImageFileName(url);
-                    Log.d("TAG","save image to cache: " + localFileName);
+                    //Log.d("TAG","save image to cache: " + localFileName);
                     saveImageToFile(image,localFileName);
                     //3. return the image using the listener
                     listener.onComplete(image.toString());
@@ -333,7 +332,7 @@ public class Model {
                 }
             });
         }else {
-            Log.d("TAG","OK reading cache image: " + localFileName);
+            //Log.d("TAG","OK reading cache image: " + localFileName);
             listener.onComplete(image.toString());
         }}
 
@@ -347,7 +346,7 @@ public class Model {
                 public void onComplete(Bitmap bitMap) {
                     //2. save the image localy
                     String localFileName = getLocalImageFileName(url);
-                    Log.d("TAG","save image to cache: " + localFileName);
+                    //Log.d("TAG","save image to cache: " + localFileName);
 
                     saveImageToFile(bitMap,localFileName);
                     //3. return the image using the listener
@@ -359,18 +358,9 @@ public class Model {
                     listener.fail();
                 }
             });
-        }else {
-            Log.d("TAG","OK reading cache image: " + localFileName);
+        } else {
+            //Log.d("TAG","OK reading cache image: " + localFileName);
             listener.onComplete(image);
-            }}
-
-
-//    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
-//        firebaseModel.saveImage(imageBitmap, listener);
-//    }
-
-//    public void getImage(String url, GetImageListener listener) {
-//        firebaseModel.getImage(url, listener);
-//    }
+        }}
 
 }
